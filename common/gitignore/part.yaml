@@ -1,4 +1,4 @@
 name: gitignore
-description: "placeholder"
-language: placeholder
+description: "Sensible root .gitignore for mixed Python/shell projects"
+language: common
 files_dir: files
