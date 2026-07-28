@@ -1,6 +1,6 @@
 # Docs
 
-**User guide (site source):** [content/](content/index.md) — Overview → Tutorial → Seed / Snip / Catalog / Inventory.
+**User guide (site source):** [content/](content/index.md) — nav: **Quickstart** · **Catalog** · **Reference**.
 
 **Preview / build** (Zensical — Material for MkDocs successor; config stays `mkdocs.yml`):
 

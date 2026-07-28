@@ -13,23 +13,26 @@ theme:
   variant: modern
 
 nav:
-  - Learn: index.md
-  - Overview: overview.md
-  - Tutorial: tutorial.md
-  - Seed: seed.md
-  - Snip: snip.md
-  - Catalog: catalog.md
-  - Inventory: inventory.md
-  - Quickstart: quickstart.md
-  - Status: status.md
-  - ADRs:
-    - Index: adr/README.md
-    - 0001 Purpose: adr/0001-purpose-and-vision.md
-    - 0002 Seed and snip: adr/0002-seed-and-snip-clis.md
-    - 0003 Catalog layout: adr/0003-catalog-layout-and-self-hosting.md
-    - 0004 Backend tools: adr/0004-backend-tools-via-mise.md
-    - 0005 Snip anchors: adr/0005-snip-anchors-pins-and-update-ux.md
-    - 0006 Lean implementation: adr/0006-lean-implementation.md
+  - Quickstart:
+    - Learn: index.md
+    - Overview: overview.md
+    - Tutorial: tutorial.md
+    - Cheat sheet: quickstart.md
+  - Catalog:
+    - Layout & hosting: catalog.md
+    - Inventory: inventory.md
+  - Reference:
+    - Seed: seed.md
+    - Snip: snip.md
+    - Status: status.md
+    - ADRs:
+      - Index: adr/README.md
+      - 0001 Purpose: adr/0001-purpose-and-vision.md
+      - 0002 Seed and snip: adr/0002-seed-and-snip-clis.md
+      - 0003 Catalog layout: adr/0003-catalog-layout-and-self-hosting.md
+      - 0004 Backend tools: adr/0004-backend-tools-via-mise.md
+      - 0005 Snip anchors: adr/0005-snip-anchors-pins-and-update-ux.md
+      - 0006 Lean implementation: adr/0006-lean-implementation.md
 
 markdown_extensions:
   - admonition
