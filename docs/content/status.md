@@ -1,25 +1,20 @@
 # Status
 
-What’s shipped vs still migrating. New users: start with the [Tutorial](tutorial.md) — you don’t need this page first.
+Catalog content maturity for **this** repository. CLI status: [snipseed status](https://github.com/mrjk/snipseed/blob/main/docs/content/status.md).
 
 ## Shipped
 
 | Piece | State |
 |-------|--------|
-| `bin/seed` / `bin/snip` | Primary UX (`ut_cli/`) |
 | Catalog roots | `projects/` + `files/` (growing) |
-| `UT_CATALOG_REPO` | Honored (URL or local path) |
-| Copier / vendir | Pinned via mise; wrapped by the CLIs |
-| Anchor `snip sync <file>` (inject) | Supported |
-| Boilerplate `snip:slot=` whole-file sync | Supported |
-| Docs learning path | Overview → Tutorial → Seed / Snip / Catalog / Inventory |
-| Docs inventory page | Live `projects/` + `files/` via Zensical macros |
+| Live inventory | [Inventory](inventory.md) via Zensical macros |
+| Layout / self-hosting docs | [Catalog](catalog.md) · [ADR 0003](adr/0003-catalog-layout-and-self-hosting.md) |
 
 ## Still transitional
 
 | Piece | Notes |
 |-------|--------|
-| Catalog content | Growing; live list on [Inventory](inventory.md) (build-time macros, not committed) |
+| Catalog content | Growing; live list on [Inventory](inventory.md) |
 
 ## Related
 

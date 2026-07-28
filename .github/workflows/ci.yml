@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,10 +16,8 @@ jobs:
           install: true
           cache: true
 
-      - name: ShellCheck
-        run: shellcheck bin/seed bin/snip
+      - name: Install docs deps
+        run: pip install -r docs/requirements.txt
 
-      - name: Run Python unittest (ut_cli)
-        run: python -m unittest discover -s tests -p 'test_*.py' -v
-        env:
-          UT_CATALOG_REPO: ${{ github.workspace }}
+      - name: Build docs
+        run: task docs:build

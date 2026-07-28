@@ -1,8 +1,10 @@
 # Docs
 
-**User guide (site source):** [content/](content/index.md) — nav: **Quickstart** · **Catalog** · **Reference**.
+**User guide (site source):** [content/](content/index.md) — catalog layout, inventory, authoring.
 
-**Preview / build** (Zensical — Material for MkDocs successor; config stays `mkdocs.yml`):
+**CLI docs** (`seed` / `snip`): [snipseed](https://github.com/mrjk/snipseed/tree/main/docs/content)
+
+**Preview / build** (Zensical — config stays `mkdocs.yml`):
 
 ```bash
 # from docs/
@@ -18,8 +20,7 @@ task docs:build
 
 Also:
 
-- **[ADRs](content/adr/README.md)** — architecture decisions  
-- **[Implementation plan](IMPLEMENTATION.md)** — build brief (already implemented)
+- **[ADRs](content/adr/README.md)** — catalog decisions (0001, 0003)
 - **[mkdocs.yml](mkdocs.yml)** — Zensical config (`docs_dir: content`)
-- **[macros.py](macros.py)** — Zensical macros: live `projects/` + `files/` inventory
+- **[macros.py](macros.py)** — live `projects/` + `files/` inventory
 - **[Taskfile.yml](Taskfile.yml)** — install / serve / build

@@ -1,27 +1,27 @@
 # Learn universal-templates
 
-A **git catalog** of project scaffolds and reusable snippets, plus two small CLIs:
+A **git catalog** of reusable project scaffolds and file snippets:
 
-| CLI | Job |
-|-----|-----|
-| **`seed`** | Create / update a whole project from `projects/` |
-| **`snip`** | Drop in or refresh files and marked regions from `files/` |
+| Tree | Contents |
+|------|----------|
+| **`projects/`** | Full project templates (Copier) — consumed with `seed` |
+| **`files/`** | Scripts and fragments — consumed with `snip` |
 
-No registry, no server — just git + thin wrappers around Copier (`seed`) and vendir (`snip`).
+No package registry. Anyone can fork or host their own catalog with the same layout.
+
+## Tools live elsewhere
+
+The **`seed`** / **`snip`** CLIs are the [**snipseed**](https://github.com/mrjk/snipseed) project. Install and use them from there; point `UT_CATALOG_REPO` at this repo (or your fork).
 
 ## Suggested path
 
-Read in order (about 15–20 minutes hands-on):
-
 | Step | Doc | What you do |
 |------|-----|-------------|
-| 1 | [Overview](overview.md) | Mental model (5 min read) |
-| 2 | [Tutorial](tutorial.md) | Run real `seed` + `snip` commands |
-| 3 | [Seed](seed.md) | Project scaffolds in depth |
-| 4 | [Snip](snip.md) | Files, anchors, sync policy |
-| 5 | [Catalog](catalog.md) | Layout, pins, host your own |
-| 6 | [Inventory](inventory.md) | What’s exposed right now |
+| 1 | [Overview](overview.md) | Catalog mental model |
+| 2 | [Catalog](catalog.md) | Layout, pins, self-hosting |
+| 3 | [Inventory](inventory.md) | What’s in this catalog today |
+| 4 | [Author a catalog](guides/index.md) | Add projects / files |
 
-Short reference: [Quickstart](quickstart.md) · what’s shipped: [Status](status.md)
+CLI usage (tutorial, guides, `seed` / `snip` reference): **[snipseed docs](https://github.com/mrjk/snipseed/tree/main/docs/content)**.
 
-Architecture decisions (optional): [ADRs](adr/README.md)
+Architecture (catalog): [ADRs](adr/README.md)

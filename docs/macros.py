@@ -2,20 +2,43 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import yaml
 
-# docs/ → repo root (ut_cli lives here; not on PYTHONPATH when zensical runs)
 _DOCS_ROOT = Path(__file__).resolve().parent
 _REPO_ROOT = _DOCS_ROOT.parent
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
-
-from ut_cli import catalog  # noqa: E402
-
 _CATALOG = str(_REPO_ROOT)
+
+
+def _list_projects(base: Path) -> list[str]:
+    items: list[str] = []
+    for path in sorted(base.rglob("copier.y*ml")):
+        if path.name not in {"copier.yml", "copier.yaml"}:
+            continue
+        rel = path.parent.relative_to(base.parent)
+        items.append(str(rel).replace("\\", "/"))
+    return items
+
+
+def _list_files(base: Path) -> list[str]:
+    items: list[str] = []
+    for path in sorted(base.rglob("*")):
+        if not path.is_file() or path.name.startswith("."):
+            continue
+        rel = path.relative_to(base.parent)
+        items.append(str(rel).replace("\\", "/"))
+    return items
+
+
+def list_tree(root_name: str) -> list[str]:
+    """List catalog entries under projects/ or files/ in this checkout."""
+    base = _REPO_ROOT / root_name
+    if not base.is_dir():
+        return []
+    if root_name == "projects":
+        return _list_projects(base)
+    return _list_files(base)
 
 
 def _project_blurb(rel_path: str) -> str:
@@ -53,8 +76,8 @@ def _md_table(headers: list[str], rows: list[list[str]]) -> str:
 
 
 def define_env(env):
-    projects = catalog.list_tree("projects", repo=_CATALOG)
-    files = catalog.list_tree("files", repo=_CATALOG)
+    projects = list_tree("projects")
+    files = list_tree("files")
 
     env.variables["catalog_root"] = _CATALOG
     env.variables["catalog_projects"] = projects

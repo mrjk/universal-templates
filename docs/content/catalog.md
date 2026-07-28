@@ -1,6 +1,6 @@
 # Catalog and self-hosting
 
-The valuable artifact is the **git catalog**. `seed` and `snip` are thin clients: same UX, different backends (Copier vs vendir).
+The valuable artifact is the **git catalog**. Consumers use [snipseed](https://github.com/mrjk/snipseed) (`seed` / `snip`) against this repo or any compatible fork.
 
 ## Default catalog
 
@@ -8,9 +8,9 @@ The valuable artifact is the **git catalog**. `seed` and `snip` are thin clients
 https://github.com/mrjk/universal-templates.git
 ```
 
-Unset `UT_CATALOG_REPO` → that URL. In this repo, mise also sets the env var for you.
+Unset `UT_CATALOG_REPO` in snipseed → that URL.
 
-Local checkout (great while learning or authoring):
+Local checkout (great while authoring):
 
 ```bash
 export UT_CATALOG_REPO="$HOME/prj/universal-templates"
@@ -24,8 +24,8 @@ projects/                 # seed → Copier
 files/                    # snip → vendir (+ anchors)
 ```
 
-| Kind | Location | You run |
-|------|----------|---------|
+| Kind | Location | Consumer runs |
+|------|----------|---------------|
 | Project | `projects/<name>/` | `seed new projects/<name>` |
 | Fragment / file | `files/…` | `snip add` / `snip sync` |
 
@@ -45,12 +45,12 @@ seed list
 snip list
 ```
 
-Same commands, your content — no registry account.
+Same commands, your content — no registry account. Consumer details: [snipseed — own catalog](https://github.com/mrjk/snipseed/blob/main/docs/content/guides/own-catalog.md).
 
 ## Pins / versioning
 
-- Prefer **git tags** on the catalog (`v1.2.3`) for releases others consume.  
-- `seed` records template linkage in `.copier-answers.yml`.  
+- Prefer **git tags** on the catalog (`v1.2.3`) for releases others consume.
+- `seed` records template linkage in `.copier-answers.yml`.
 - `snip` records pins in vendir lock and/or in-file anchors / headers.
 
 ```bash
@@ -67,8 +67,14 @@ Same commands, your content — no registry account.
 **Project:** `projects/<name>/` with `copier.yml` + template files (include `.copier-answers.yml.jinja` so consumers can sync).  
 **Snip:** drop files under `files/bin|src|notes/…`.
 
+For whole-script boilerplates consumers will customize:
+
+- Prefix managed metadata with `snip:` (`path` / `ref` / `source` / `version`).
+- Add empty `# >>> snip:slot=NAME` / `# <<< snip:slot=NAME` holes.
+- Consumer guide: [Customize a boilerplate script](https://github.com/mrjk/snipseed/blob/main/docs/content/guides/boilerplate-script.md) (snipseed).
+
 Authors may peek at Copier/vendir; **consumers** stay on `seed` / `snip`.
 
 ## Related
 
-[Inventory](inventory.md) · [Tutorial](tutorial.md) · [ADR 0003](adr/0003-catalog-layout-and-self-hosting.md) · [ADR 0004](adr/0004-backend-tools-via-mise.md)
+[Inventory](inventory.md) · [Guides](guides/index.md) · [ADR 0003](adr/0003-catalog-layout-and-self-hosting.md) · [snipseed](https://github.com/mrjk/snipseed)

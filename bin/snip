@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-# snip — file/region sync (vendir via ut_cli)
-set -euo pipefail
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-export PYTHONPATH="${ROOT}${PYTHONPATH:+:$PYTHONPATH}"
-exec python -m ut_cli.snip_cmd "$@"

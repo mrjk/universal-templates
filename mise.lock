@@ -43,80 +43,41 @@ checksum = "sha256:0d422a1439ec308e03f47df551bc30f5994727c456e414b026d202bcda9b7
 url = "https://github.com/astral-sh/python-build-standalone/releases/download/20260718/cpython-3.12.13+20260718-x86_64-pc-windows-msvc-install_only_stripped.tar.gz"
 provenance = "github-attestations"
 
-[[tools.shellcheck]]
-version = "0.11.0"
-backend = "aqua:koalaman/shellcheck"
+[[tools.task]]
+version = "3.52.0"
+backend = "aqua:go-task/task"
 
-[tools.shellcheck."platforms.linux-arm64"]
-checksum = "sha256:12b331c1d2db6b9eb13cfca64306b1b157a86eb69db83023e261eaa7e7c14588"
-url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.aarch64.tar.xz"
-url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056934"
+[tools.task."platforms.linux-arm64"]
+checksum = "sha256:7e0044108830cec0534577b289564e3b7c83e6df276feb631a1edc63d04e4ebe"
+url = "https://github.com/go-task/task/releases/download/v3.52.0/task_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/go-task/task/releases/assets/464613352"
 
-[tools.shellcheck."platforms.linux-arm64-musl"]
-checksum = "sha256:12b331c1d2db6b9eb13cfca64306b1b157a86eb69db83023e261eaa7e7c14588"
-url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.aarch64.tar.xz"
-url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056934"
+[tools.task."platforms.linux-arm64-musl"]
+checksum = "sha256:7e0044108830cec0534577b289564e3b7c83e6df276feb631a1edc63d04e4ebe"
+url = "https://github.com/go-task/task/releases/download/v3.52.0/task_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/go-task/task/releases/assets/464613352"
 
-[tools.shellcheck."platforms.linux-x64"]
-checksum = "sha256:8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198"
-url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.x86_64.tar.xz"
-url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056942"
+[tools.task."platforms.linux-x64"]
+checksum = "sha256:02c679ffae53dca791804847d78b31731615894e292948397c971c87ac9e95bd"
+url = "https://github.com/go-task/task/releases/download/v3.52.0/task_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/go-task/task/releases/assets/464613330"
 
-[tools.shellcheck."platforms.linux-x64-musl"]
-checksum = "sha256:8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198"
-url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.x86_64.tar.xz"
-url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056942"
+[tools.task."platforms.linux-x64-musl"]
+checksum = "sha256:02c679ffae53dca791804847d78b31731615894e292948397c971c87ac9e95bd"
+url = "https://github.com/go-task/task/releases/download/v3.52.0/task_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/go-task/task/releases/assets/464613330"
 
-[tools.shellcheck."platforms.macos-arm64"]
-checksum = "sha256:56affdd8de5527894dca6dc3d7e0a99a873b0f004d7aabc30ae407d3f48b0a79"
-url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.darwin.aarch64.tar.xz"
-url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056932"
+[tools.task."platforms.macos-arm64"]
+checksum = "sha256:debfa9a3bc06fcb5d5550b44725ecd22bb305499ce057bd6d7a774db5cdaa7b8"
+url = "https://github.com/go-task/task/releases/download/v3.52.0/task_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/go-task/task/releases/assets/464613319"
 
-[tools.shellcheck."platforms.macos-x64"]
-checksum = "sha256:3c89db4edcab7cf1c27bff178882e0f6f27f7afdf54e859fa041fca10febe4c6"
-url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.darwin.x86_64.tar.xz"
-url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056930"
+[tools.task."platforms.macos-x64"]
+checksum = "sha256:416348147bc2f1c729417249d932add7894fb01a126128778195942c249d7c0b"
+url = "https://github.com/go-task/task/releases/download/v3.52.0/task_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/go-task/task/releases/assets/464613314"
 
-[tools.shellcheck."platforms.windows-x64"]
-checksum = "sha256:8a4e35ab0b331c85d73567b12f2a444df187f483e5079ceffa6bda1faa2e740e"
-url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.zip"
-url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056944"
-
-[[tools.vendir]]
-version = "0.46.0"
-backend = "aqua:carvel-dev/vendir"
-
-[tools.vendir."platforms.linux-arm64"]
-checksum = "sha256:f80a27f1247ad4353b6054ca9d7e13e2511bf70c0e28d85bc314d2177ec2b0d2"
-url = "https://github.com/carvel-dev/vendir/releases/download/v0.46.0/vendir-linux-arm64"
-url_api = "https://api.github.com/repos/carvel-dev/vendir/releases/assets/441967026"
-
-[tools.vendir."platforms.linux-arm64-musl"]
-checksum = "sha256:f80a27f1247ad4353b6054ca9d7e13e2511bf70c0e28d85bc314d2177ec2b0d2"
-url = "https://github.com/carvel-dev/vendir/releases/download/v0.46.0/vendir-linux-arm64"
-url_api = "https://api.github.com/repos/carvel-dev/vendir/releases/assets/441967026"
-
-[tools.vendir."platforms.linux-x64"]
-checksum = "sha256:878f3c77cae21b9b63d0ea6c11454c0008d41652d2eb3d1844fdcf69cca6ae9e"
-url = "https://github.com/carvel-dev/vendir/releases/download/v0.46.0/vendir-linux-amd64"
-url_api = "https://api.github.com/repos/carvel-dev/vendir/releases/assets/441967030"
-
-[tools.vendir."platforms.linux-x64-musl"]
-checksum = "sha256:878f3c77cae21b9b63d0ea6c11454c0008d41652d2eb3d1844fdcf69cca6ae9e"
-url = "https://github.com/carvel-dev/vendir/releases/download/v0.46.0/vendir-linux-amd64"
-url_api = "https://api.github.com/repos/carvel-dev/vendir/releases/assets/441967030"
-
-[tools.vendir."platforms.macos-arm64"]
-checksum = "sha256:e136160aa642231c6eb1df25cbe3e57e5f3848ac0a7e7de57bbc3249fdbd800f"
-url = "https://github.com/carvel-dev/vendir/releases/download/v0.46.0/vendir-darwin-arm64"
-url_api = "https://api.github.com/repos/carvel-dev/vendir/releases/assets/441967028"
-
-[tools.vendir."platforms.macos-x64"]
-checksum = "sha256:5b417c837b0134fabf2c4a322db054eacb8cfbe8d0e8cbbb86afc7e4f0d625fd"
-url = "https://github.com/carvel-dev/vendir/releases/download/v0.46.0/vendir-darwin-amd64"
-url_api = "https://api.github.com/repos/carvel-dev/vendir/releases/assets/441967041"
-
-[tools.vendir."platforms.windows-x64"]
-checksum = "sha256:781c0a9eafb86ddd88d078d29766f6afe5ec7b6b9a28efcb38c7a2424eb745f7"
-url = "https://github.com/carvel-dev/vendir/releases/download/v0.46.0/vendir-windows-amd64.exe"
-url_api = "https://api.github.com/repos/carvel-dev/vendir/releases/assets/441967027"
+[tools.task."platforms.windows-x64"]
+checksum = "sha256:e3bd4439b445f4f135758a2666ec8b33ccde789f7f615309c58f116b0e566e79"
+url = "https://github.com/go-task/task/releases/download/v3.52.0/task_windows_amd64.zip"
+url_api = "https://api.github.com/repos/go-task/task/releases/assets/464613286"

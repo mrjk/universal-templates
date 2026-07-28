@@ -2,5 +2,6 @@
 .snip/
 docs/site/
 mise.local.toml
+tmp/
 
 **/__pycache__/**

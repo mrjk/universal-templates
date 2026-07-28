@@ -7,21 +7,15 @@ includes:
     dir: docs
 
 tasks:
-  lint:
-    desc: ShellCheck seed and snip shims
+  list:
+    desc: Show root tasks
+    aliases:
+      - default
+    silent: true
     cmds:
-      - shellcheck bin/seed bin/snip
-
-  test:py:
-    desc: Run Python unittest suite for ut_cli
-    cmds:
-      - python -m unittest discover -s tests -p 'test_*.py' -v
-
-  test:
-    desc: Run Python tests
-    cmds:
-      - task: test:py
+      - task --list
 
   ci:
-    desc: Lint + test (local CI)
-    deps: [lint, test]
+    desc: Build catalog docs (local CI)
+    cmds:
+      - task: docs:build

@@ -2,49 +2,34 @@
 
 **universal-templates** is a public (or private) **git catalog** of boilerplate:
 
-- **Projects** — full skeletons under `projects/` (e.g. a small Python package)
+- **Projects** — full skeletons under `projects/` (e.g. a Python package or Ansible base)
 - **Files / snips** — fragments and scripts under `files/` you used to copy-paste
 
-You consume it with two commands that share the same habits: catalog URL, list/browse, sync, pins, and **diff → confirm** before overwrite.
+Distribution is **git**. There is no registry and no custom server — a URL or local path is enough.
 
-## Two jobs, one experience
+## How you consume it
 
-```text
-        ┌──────────────────────────────────────┐
-        │  seed / snip  (what you type)        │
-        │  menus · sync · pins · confirm       │
-        └──────────────────┬───────────────────┘
-               ┌───────────┴───────────┐
-               ▼                       ▼
-           Copier                    vendir
-        projects/*                  files/*
-```
-
-| You want… | Use |
-|-----------|-----|
-| New app from a maintained skeleton | `seed new …` then later `seed sync` |
-| Refresh shared helpers inside an old script | `snip sync ./that_script.sh` |
-| Drop a catalog file into a folder | `snip add files/…` |
-| Use *your* snippets instead of the public ones | Set `UT_CATALOG_REPO` |
-
-You talk to **`seed` / `snip`**, not to Copier or vendir day-to-day.
-
-## Mental model
-
-1. **The catalog** is the source of truth (this repo, a fork, or a local path).
-2. **`seed`** grows or updates a **project directory**.
-3. **`snip`** refreshes **whole files**, **inject regions** (`snip:id=`), or **boilerplate slots** (`snip:slot=`).
-4. **Pins** (git refs / tags) record which version you applied.
-5. Updates are never silent: you see a **diff**, confirm, then **catalog wins** (or pass `-y` for CI).
-
-## Tiny taste
+Install the [**snipseed**](https://github.com/mrjk/snipseed) CLIs (`seed` / `snip`), then point them at this catalog:
 
 ```bash
-seed list                          # what’s available under projects/
-seed new projects/python-base ./my-app
+export UT_CATALOG_REPO="https://github.com/mrjk/universal-templates.git"
+# or a local checkout / your fork
 
-snip list                          # what’s available under files/
-snip sync ./myscript.sh            # update marked regions
+seed list
+snip list
 ```
 
-Next: hands-on [Tutorial](tutorial.md).
+| Catalog tree | CLI | Job |
+|--------------|-----|-----|
+| `projects/` | `seed` | Create / update a whole project (Copier) |
+| `files/` | `snip` | Drop in or refresh files and marked regions (vendir) |
+
+CLI tutorials and reference live in **snipseed**, not here.
+
+## This repo’s job
+
+1. Keep **`projects/`** and **`files/`** useful and versioned (prefer git tags).
+2. Document **layout and hosting** so forks stay compatible.
+3. Publish an **[Inventory](inventory.md)** of what is exposed.
+
+Authoring: [Catalog](catalog.md) · [Guides](guides/index.md) · [ADR 0003](adr/0003-catalog-layout-and-self-hosting.md).

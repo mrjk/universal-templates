@@ -1,24 +1,18 @@
-# Dev / CI tooling for this repo (seed/snip).
+# Dev tooling for this catalog (projects/ + files/ + docs).
 # Setup: mise trust && mise install
-# Lockfile: mise.lock (checksums/URLs for reproducible installs)
-# With `mise activate`, [env]._.path puts ./bin on PATH so `seed`/`snip` work in-repo.
+# Lockfile: mise.lock
 #
-# Do NOT define mise [tasks.*] here — use Taskfile.yml (`task lint|test|ci`).
+# Do NOT define mise [tasks.*] here — use Taskfile.yml (`task …`).
+# CLIs (seed / snip) live in https://github.com/mrjk/snipseed
 
 [tools]
-shellcheck = "0.11.0"
 python = "3.12.13"
+task = "3.52.0"
+# Optional: authors testing Copier scaffolds under projects/
 copier = "9.17.0"
-vendir = "0.46.0"
 
-# Expose ./bin on PATH when this directory is active (mise activate / mise trust).
-# Auto-create/activate .venv so `python`/`pip` are project-local while cd'd here.
-# UT_CATALOG_REPO: default public catalog for seed/snip (override to self-host).
-# See docs/content/adr/0003-catalog-layout-and-self-hosting.md
 [env]
-_.path = ["{{config_root}}/bin"]
 _.python.venv = { path = ".venv", create = true }
-UT_CATALOG_REPO = "https://github.com/mrjk/universal-templates.git"
 
 [settings]
 lockfile = true

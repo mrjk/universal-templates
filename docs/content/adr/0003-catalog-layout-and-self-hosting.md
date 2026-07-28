@@ -48,10 +48,9 @@ Exact on-disk metadata filenames for file units (e.g. `part.yaml` vs successors)
 
   **`UT_CATALOG_REPO`**
 
-  Default / documented value: `https://github.com/mrjk/universal-templates.git`
-
-- Set in this repo’s [`mise.toml`](../../../mise.toml) `[env]` so local work picks it up easily; override to point at a fork, mirror, or local path.
-- `seed` and `snip` must honor `UT_CATALOG_REPO` (with that URL as fallback when unset).
+- Default / documented value: `https://github.com/mrjk/universal-templates.git`
+- Consumers set it in their environment (or snipseed’s mise `[env]`); override to point at a fork, mirror, or local path.
+- `seed` and `snip` (snipseed) must honor `UT_CATALOG_REPO` (with that URL as fallback when unset).
 - **Hosting your own snippets** = publish a git repo with the same `projects/` + `files/` convention and point clients at it. No registry account required.
 
 ### Migration from former layout
@@ -67,4 +66,4 @@ Legacy trees and the `bp` CLI are gone; catalog content lives only under `projec
 
 - Browse/menu UX is hierarchy-first under `projects/` and `files/`.
 - Forks and private catalogs stay first-class; documentation should show “set `UT_CATALOG_REPO=…`”.
-- Default URL is easy to change in one place (`mise.toml` + ADR/docs), not hardcoded across many scripts without a single constant.
+- Default URL is easy to change in one place (snipseed `DEFAULT_CATALOG_REPO` + docs), not hardcoded across many scripts without a single constant.
