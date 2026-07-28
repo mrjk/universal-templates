@@ -1,0 +1,15 @@
+_subdirectory: template
+_min_copier_version: "9.0.0"
+
+project_slug:
+  type: str
+  help: Python package / project slug (import name)
+  validator: >-
+    {% if not (project_slug | regex_search('^[a-z][a-z0-9_]*$')) %}
+    Must be a valid Python identifier: lowercase, digits, underscores
+    {% endif %}
+
+description:
+  type: str
+  help: Short project description
+  default: "A Python project"

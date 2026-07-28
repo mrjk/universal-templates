@@ -1,0 +1,12 @@
+_subdirectory: template
+_min_copier_version: "9.0.0"
+
+project_slug:
+  type: str
+  help: Project slug
+  default: fixture_app
+
+description:
+  type: str
+  help: Short description
+  default: "Fixture project for seed tests"
