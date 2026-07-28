@@ -1,6 +1,6 @@
 # Catalog and self-hosting
 
-The valuable artifact is the **git catalog**. `seed` and `snip` are thin clients with a **unified UX**; they wrap **Copier** or **vendir** so you do not operate those tools directly for everyday use.
+The valuable artifact is the **git catalog**. `seed` and `snip` are thin clients: same UX, different backends (Copier vs vendir).
 
 ## Default catalog
 
@@ -8,34 +8,36 @@ The valuable artifact is the **git catalog**. `seed` and `snip` are thin clients
 https://github.com/mrjk/universal-templates.git
 ```
 
-```toml
-# mise.toml
-[env]
-UT_CATALOG_REPO = "https://github.com/mrjk/universal-templates.git"
+Unset `UT_CATALOG_REPO` → that URL. In this repo, mise also sets the env var for you.
+
+Local checkout (great while learning or authoring):
+
+```bash
+export UT_CATALOG_REPO="$HOME/prj/universal-templates"
+# or simply: export UT_CATALOG_REPO="$PWD"
 ```
 
-## Target layout
+## Layout
 
 ```text
 projects/                 # seed → Copier
   python-base/
-  python-web/
-  shell-bats/
-  shell-home/
-files/                    # snip → vendir (+ region glue)
+  _fixture/               # tiny demo
+  …                       # more scaffolds over time
+files/                    # snip → vendir (+ anchors)
   bin/
   src/
   notes/
 ```
 
-| Kind | Location | Engine (behind UX) |
-|------|----------|--------------------|
-| Project | `projects/<name>/` | Copier |
-| Fragment / autonomous | `files/…` | vendir (+ anchors when in-file) |
+| Kind | Location | You run |
+|------|----------|---------|
+| Project | `projects/<name>/` | `seed new projects/<name>` |
+| Fragment / file | `files/…` | `snip add` / `snip sync` |
 
-Legacy `templates/`, `parts/`, `common/` migrate here over time ([Status](status.md)).
+Legacy `templates/`, `parts/`, `common/` still exist for the deprecated `bp` CLI and will migrate gradually ([Status](status.md)).
 
-## Host your own snippets
+## Host your own
 
 ```bash
 mkdir -p my-catalog/{projects,files/bin,files/src,files/notes}
@@ -45,23 +47,21 @@ git remote add origin https://github.com/YOU/my-catalog.git
 git push -u origin main
 
 export UT_CATALOG_REPO="https://github.com/YOU/my-catalog.git"
-seed
-snip sync ./some_script.sh
+seed list
+snip list
 ```
 
-Local path:
+Same commands, your content — no registry account.
+
+## Pins / versioning
+
+- Prefer **git tags** on the catalog (`v1.2.3`) for releases others consume.  
+- `seed` records template linkage in `.copier-answers.yml`.  
+- `snip` records pins in vendir lock and/or in-file anchors / headers.
 
 ```bash
-export UT_CATALOG_REPO="$HOME/prj/my-catalog"
+# >>> snip:id=logging path=files/src/logging-setup ref=v1.2.3
 ```
-
-Same commands, your content — no registry.
-
-## Versioning for other people
-
-- Prefer **git tags** on the catalog (`v1.2.3`).  
-- `seed` records template ref (via Copier answers / wrapper state).  
-- `snip` records pins in vendir lock and/or in-file headers/anchors.
 
 ```bash
 # Template source: https://github.com/YOU/my-catalog.git
@@ -70,11 +70,11 @@ Same commands, your content — no registry.
 
 ## Adding content (authors)
 
-**Project:** add `projects/<name>/` as a Copier template → consumers `seed new projects/<name>`.  
-**Snip:** add under `files/bin|src|notes/…` → consumers embed anchors/header → `snip sync`.
+**Project:** `projects/<name>/` with `copier.yml` + template files (include `.copier-answers.yml.jinja` so consumers can sync).  
+**Snip:** drop files under `files/bin|src|notes/…`.
 
-Authors may touch Copier/vendir layouts; **consumers** stay on `seed`/`snip`.
+Authors may peek at Copier/vendir; **consumers** stay on `seed` / `snip`.
 
 ## Related
 
-- [ADR 0003](../adr/0003-catalog-layout-and-self-hosting.md) · [ADR 0004](../adr/0004-backend-tools-via-mise.md)
+[Tutorial](tutorial.md) · [ADR 0003](adr/0003-catalog-layout-and-self-hosting.md) · [ADR 0004](adr/0004-backend-tools-via-mise.md)

@@ -1,6 +1,6 @@
 # Implementation plan — `seed` / `snip` (handoff)
 
-Give this document to a coding agent as the build brief. Product intent is locked in [`docs/adr/`](adr/README.md) and [`docs/content/`](content/README.md). **Do not redesign** those decisions; implement them.
+Give this document to a coding agent as the build brief. Product intent is locked in [`docs/content/adr/`](content/adr/README.md) and [`docs/content/`](content/index.md). **Do not redesign** those decisions; implement them.
 
 ## Goal
 
@@ -125,7 +125,7 @@ Acceptance:
 
 ## Phase 3 — `snip sync <file>` (anchors)
 
-Per [ADR 0005](adr/0005-snip-anchors-pins-and-update-ux.md) and [snip guide](content/snip.md):
+Per [ADR 0005](content/adr/0005-snip-anchors-pins-and-update-ux.md) and [snip guide](content/snip.md):
 
 Anchor sketch (lock this grammar in code + one doc note if refined):
 
@@ -189,7 +189,7 @@ Acceptance:
 
 ```text
 Implement seed/snip per docs/IMPLEMENTATION.md in this repo.
-Follow docs/adr and docs/content. Python only, stdlib-first, small modules
+Follow docs/content/adr and docs/content. Python only, stdlib-first, small modules
 under ut_cli/. Wrap copier (seed) and vendir (snip) via subprocess.
 Unified UX: UT_CATALOG_REPO, diff+confirm catalog-wins, -y for CI.
 Do not extend bin/bp. Work phase by phase; keep PRs/reviewable chunks small.

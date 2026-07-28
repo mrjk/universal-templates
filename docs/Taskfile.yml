@@ -1,0 +1,18 @@
+# https://taskfile.dev — run from docs/ (`task serve`) or repo root via include (`task docs:serve`)
+version: "3"
+
+tasks:
+  install:
+    desc: Install Zensical into the project .venv
+    cmds:
+      - pip install -r requirements.txt
+
+  serve:
+    desc: Preview docs at http://localhost:8089
+    cmds:
+      - zensical serve -f mkdocs.yml
+
+  build:
+    desc: Build static site into site/
+    cmds:
+      - zensical build -f mkdocs.yml

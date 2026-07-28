@@ -1,33 +1,26 @@
 # Status
 
-Product intent vs what the tree does today.
+What’s shipped vs still migrating. New users: start with the [Tutorial](tutorial.md) — you don’t need this page first.
 
-## Target
+## Shipped
 
-| Piece | Intent |
+| Piece | State |
 |-------|--------|
-| Catalog | `projects/` + `files/{bin,src,notes}/` |
-| UX | Unified **`seed`** + **`snip`** (menus, sync, pins, diff/confirm) |
-| Backends | **`seed` → Copier**, **`snip` → vendir** (via mise only; no third engine) |
-| Config | `UT_CATALOG_REPO` |
+| `bin/seed` / `bin/snip` | Primary UX (`ut_cli/`) |
+| Catalog roots | `projects/` + `files/` (growing) |
+| `UT_CATALOG_REPO` | Honored (URL or local path) |
+| Copier / vendir | Pinned via mise; wrapped by the CLIs |
+| Anchor `snip sync <file>` | Supported |
+| Docs learning path | Overview → Tutorial → Seed / Snip / Catalog |
 
-Docs in [`docs/content/`](README.md) describe that target.
+## Still transitional
 
-## Today
+| Piece | Notes |
+|-------|--------|
+| Catalog content | Demo `python-base` + `_fixture`; more real units to come |
+| Legacy trees | `templates/`, `parts/`, `common/` remain for deprecated `bp` |
+| `bp` | Works but **deprecated** — don’t extend it |
 
-| Piece | Current state |
-|-------|----------------|
-| CLIs | **`bin/seed`** / **`bin/snip`** (`ut_cli/`) — primary UX |
-| Catalog roots | `projects/` (incl. `python-base`, `_fixture`) + `files/src/_fixture/`; legacy `templates/`, `parts/`, `common/` still present |
-| `UT_CATALOG_REPO` | Set in `mise.toml`; honored by seed/snip |
-| Copier | Pinned via mise; wrapped by `seed` |
-| vendir | Pinned via mise; wrapped by `snip` |
-| Anchor `snip sync <file>` | Implemented (`ut_cli/anchors.py`) |
-| `bp` | Deprecated prototype — still works; do not extend |
+## Related
 
-## How to read the docs
-
-1. [Overview](overview.md) + [Quickstart](quickstart.md)  
-2. [Seed](seed.md) / [Snip](snip.md) / [Catalog](catalog.md)  
-3. [ADR 0004](../adr/0004-backend-tools-via-mise.md) — Copier or vendir, unified UX  
-4. Root [`README.md`](../../README.md) for install + mise
+[Overview](overview.md) · [ADRs](adr/README.md)

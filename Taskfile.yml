@@ -1,6 +1,11 @@
 # https://taskfile.dev
 version: "3"
 
+includes:
+  docs:
+    taskfile: docs/Taskfile.yml
+    dir: docs
+
 tasks:
   lint:
     desc: ShellCheck bp, install.sh, seed, snip

@@ -1,105 +1,49 @@
 # Quickstart
 
-Get oriented in a few minutes using the **main catalog**:
+Cheat sheet after you’ve done the [Tutorial](tutorial.md) once.
 
-`https://github.com/mrjk/universal-templates.git`
-
-Commands describe the **target** UX (`seed` / `snip`). See [Status](status.md) if binaries are not on PATH yet. Hosting your own catalog is optional and covered at the end.
-
-## 1. Clone this repo
+## Install (this repo)
 
 ```bash
 git clone https://github.com/mrjk/universal-templates.git
 cd universal-templates
+mise trust && mise install
+export UT_CATALOG_REPO="$PWD"   # learn against local checkout
 ```
 
-## 2. Enable tools (mise)
+`seed` and `snip` come from `./bin` via mise `PATH`.
 
-With [mise](https://mise.jdx.dev/) activated:
+## Everyday commands
 
 ```bash
-mise trust    # once per machine, if prompted
-mise install  # python, copier, … (+ vendir when snip lands)
+seed list
+seed new projects/python-base ./my-app
+seed new projects/python-base ./my-app -y    # defaults, no prompts
+seed sync                                   # in a generated project
+seed                                        # numbered browse → new
+
+snip list
+snip list ./script.sh                       # anchors in a file
+snip add files/src/_fixture/snippet.sh --dest .
+snip sync ./script.sh                       # regions → menu → diff → apply
+snip sync ./script.sh -y
+snip                                        # numbered browse → add
 ```
 
-While you are in this directory, mise already sets the catalog to this project:
+## Catalog knob
 
 ```bash
-echo "$UT_CATALOG_REPO"
+# default when unset:
 # https://github.com/mrjk/universal-templates.git
-```
 
-No extra config needed to consume **this** repo.
-
-## 3. What’s in the main catalog
-
-```text
-projects/          # seed → Copier
-  python-base/
-  python-web/
-  …
-files/             # snip → vendir (+ anchors glue)
-  bin/
-  src/
-  notes/
-```
-
-## 4. Seed a project (from this catalog)
-
-```bash
-mkdir -p ~/tmp/demo-app && cd ~/tmp/demo-app
-seed
-# pick projects/python-web → answer questions → done
-
-seed sync          # later: pull template updates from the main catalog
-```
-
-Or without the menu:
-
-```bash
-seed new projects/python-web
-```
-
-You talk to **`seed`**, not to `copier` (the wrapper runs Copier against `$UT_CATALOG_REPO`).
-
-## 5. Snip-sync an existing file (from this catalog)
-
-Mark a shared region, then refresh it from the main catalog:
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-# >>> snip:id=logging-setup path=files/src/logging-setup ref=main
-log() { echo "[log] $*"; }
-# <<< snip:id=logging-setup
-
-main() { log "hello"; }
-main "$@"
-```
-
-```bash
-snip sync ./my_forgotten_old_script.sh
-# menu → diff → confirm (catalog wins)
-snip list ./my_forgotten_old_script.sh
-```
-
-You talk to **`snip`**, not to `vendir` (the wrapper fetches/locks content from this catalog).
-
-## 6. (Optional) Host your own catalog
-
-When you want **your** snippets instead of (or in addition to) the main repo, point the same CLIs at another git URL or local path:
-
-```bash
 export UT_CATALOG_REPO="https://github.com/YOU/my-catalog.git"
-# or: export UT_CATALOG_REPO="$HOME/prj/my-catalog"
-
-seed
-snip sync ./some_script.sh
+export UT_CATALOG_REPO="$HOME/prj/my-catalog"   # local path also works
 ```
 
-Same commands, your content. Layout and authoring details: [Catalog & self-hosting](catalog.md).
+## Policy
+
+Updates show a **diff**, ask for confirm, then **catalog overwrites** the selected content. Use `-y` only when you mean it (CI, scripts).
 
 ## Next
 
-- [Seed](seed.md) · [Snip](snip.md) · [Catalog](catalog.md) · [ADRs](../adr/README.md)
+[Seed](seed.md) · [Snip](snip.md) · [Catalog](catalog.md)

@@ -50,7 +50,7 @@ Exact on-disk metadata filenames for file units (e.g. `part.yaml` vs successors)
 
   Default / documented value: `https://github.com/mrjk/universal-templates.git`
 
-- Set in this repo’s [`mise.toml`](../../mise.toml) `[env]` so local work picks it up easily; override to point at a fork, mirror, or local path.
+- Set in this repo’s [`mise.toml`](../../../mise.toml) `[env]` so local work picks it up easily; override to point at a fork, mirror, or local path.
 - `seed` and `snip` must honor `UT_CATALOG_REPO` (with that URL as fallback when unset).
 - **Hosting your own snippets** = publish a git repo with the same `projects/` + `files/` convention and point clients at it. No registry account required.
 

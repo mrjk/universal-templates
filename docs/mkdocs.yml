@@ -1,0 +1,41 @@
+# Zensical reads mkdocs.yml (Material for MkDocs successor).
+# From repo root:  zensical serve -f docs/mkdocs.yml
+# Or from docs/:   zensical serve
+
+site_name: universal-templates
+site_description: Git catalog of project scaffolds (seed) and reusable snippets (snip)
+
+docs_dir: content
+site_dir: site
+dev_addr: localhost:8089
+
+theme:
+  variant: modern
+
+nav:
+  - Learn: index.md
+  - Overview: overview.md
+  - Tutorial: tutorial.md
+  - Seed: seed.md
+  - Snip: snip.md
+  - Catalog: catalog.md
+  - Quickstart: quickstart.md
+  - Status: status.md
+  - ADRs:
+    - Index: adr/README.md
+    - 0001 Purpose: adr/0001-purpose-and-vision.md
+    - 0002 Seed and snip: adr/0002-seed-and-snip-clis.md
+    - 0003 Catalog layout: adr/0003-catalog-layout-and-self-hosting.md
+    - 0004 Backend tools: adr/0004-backend-tools-via-mise.md
+    - 0005 Snip anchors: adr/0005-snip-anchors-pins-and-update-ux.md
+    - 0006 Lean implementation: adr/0006-lean-implementation.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true

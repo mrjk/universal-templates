@@ -1,67 +1,83 @@
 # Snip — files and regions
 
-`snip` updates **portions of existing source** (or whole autonomous files) from `files/`. It wraps [vendir](https://carvel.dev/vendir/) for **fetch/lock of catalog content**, and adds thin glue for anchors, menus, and confirm — same product language as [`seed`](seed.md).
+`snip` updates **files and marked regions** from `files/`. It wraps [vendir](https://carvel.dev/vendir/) for fetch/lock, plus thin glue for anchors and confirm. You normally run **`snip`**, not `vendir`.
 
-You normally run **`snip`**, not `vendir`.
+Same habits as [`seed`](seed.md): `$UT_CATALOG_REPO`, list/browse, sync, pins, diff/confirm.
 
 ## When to use `snip`
 
 - Shared helpers copy-pasted into many scripts  
-- Standalone gist-like scripts with source + version headers  
+- Drop a catalog file into a project folder  
 - Interactive refresh: pick blocks → diff → confirm  
 
 Use [`seed`](seed.md) for a full new project tree.
 
-## Commands (target)
+## Commands
 
 ```bash
-snip sync <file>              # anchors → menu → diff → apply
-snip list <file>              # portions / pins
-snip add <catalog-path> …     # attach / inject a unit
+snip                          # numbered menu of files/ → add into cwd
+snip list                     # catalog paths under files/
+snip list <file>              # anchors / header pins in a local file
+snip add <catalog-path> [--dest DIR] [--ref REF] [-y]
+snip sync                     # re-sync paths previously added (tracked)
+snip sync <file> [--ref REF] [-y]   # update anchors in that file
 ```
 
-## Anchors (regions)
+## Path 1 — add a whole file
+
+```bash
+snip add files/src/_fixture/snippet.sh --dest ./vendor -y
+# → ./vendor/snippet.sh
+```
+
+Tracked units live under `.snip/` (`vendir.yml`, lock, `units.txt`). Happy path: you never edit those by hand.
+
+```bash
+snip sync -y                  # refresh tracked units after catalog changes
+```
+
+## Path 2 — anchors inside a script
+
+Mark a region with begin/end comments:
 
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
 
-# >>> snip:id=logging-setup path=files/src/logging-setup ref=1.2.3
-log() {
-  echo "[$(date -Iseconds)] $*"
-}
-die() { log "error: $*"; exit 1; }
-# <<< snip:id=logging-setup
+# >>> snip:id=logging path=files/src/_fixture/snippet.sh ref=main
+# (old body — will be replaced from catalog)
+log() { echo old; }
+# <<< snip:id=logging
 
-# >>> snip:id=argparse-style path=files/src/argparse-style ref=main
-# … shared argv parsing …
-# <<< snip:id=argparse-style
-
-main() { :; }
+main() { log "hi"; }
 main "$@"
 ```
 
 ```bash
-snip sync ./deploy.sh
+snip list ./myscript.sh
+snip sync ./myscript.sh       # menu → diff → confirm per region
+snip sync ./myscript.sh -y    # update all regions
 ```
 
-Illustrative session:
+### Anchor rules
 
 ```text
-Portions in deploy.sh
-  [x] logging-setup   files/src/logging-setup   ref=1.2.3  (newer: 1.3.0)
-  [ ] argparse-style  files/src/argparse-style  ref=main
-Apply selected? → show diff → confirm
-updated logging-setup → ref=1.3.0
+# >>> snip:id=NAME path=files/... ref=REF
+...body...
+# <<< snip:id=NAME
 ```
 
-**Policy:** after confirm, **catalog wins** for that region (`-y` only for non-interactive/CI).
+| Field | Meaning |
+|-------|---------|
+| `id` | Name of this region in your file (begin/end must match) |
+| `path` | Catalog path under `files/` |
+| `ref` | Pin (tag, branch, or sha); bumped on successful sync |
 
-Comment style follows the host language (`#`, `//`, and similar prefixes). Begin/end ids must match.
+Comment style follows the host language (`#`, `//`, …). Grammar lives in `ut_cli/anchors.py`.
 
-Exact grammar is implemented in `ut_cli/anchors.py`.
+### Optional file header
 
-## Autonomous file header
+Whole-file units may advertise source + version:
 
 ```bash
 #!/usr/bin/env bash
@@ -70,11 +86,11 @@ Exact grammar is implemented in `ut_cli/anchors.py`.
 # curr_version: 1.2.3
 ```
 
-```bash
-snip sync ./something.sh
-```
+## Policy
 
-## Catalog paths
+After you confirm, **catalog wins** for that file or region. No silent clobber in interactive mode. `-y` is for CI and scripts.
+
+## Catalog areas
 
 | Area | Typical content |
 |------|-----------------|
@@ -82,17 +98,17 @@ snip sync ./something.sh
 | `files/src/` | Embeddable fragments |
 | `files/notes/` | Doc snippets, checklists |
 
-## Under the hood (footnote)
-
-- **vendir** pulls and locks bytes from `$UT_CATALOG_REPO` under `files/…`  
-- Glue applies those bytes into whole files or **anchor regions**, and owns the interactive UX  
-- No second package manager; no fsrc/path-sync as product backends ([ADR 0004](../adr/0004-backend-tools-via-mise.md))
+Today this repo ships a learning fixture under `files/src/_fixture/`. Real shared units grow here the same way.
 
 ## Before / after
 
 **Before:** ten scripts, ten slightly different `log()` helpers.  
-**After:** canonical unit in `files/src/logging-setup`; each script uses the same anchors; `snip sync` keeps them on a pin.
+**After:** one unit in `files/src/…`; each script uses the same anchors; `snip sync` keeps them on a pin.
+
+## Under the hood (optional)
+
+vendir pulls/locks bytes from `$UT_CATALOG_REPO`; glue applies them to destinations or anchor bodies. See [ADR 0004](adr/0004-backend-tools-via-mise.md) · [ADR 0005](adr/0005-snip-anchors-pins-and-update-ux.md).
 
 ## Related
 
-- [ADR 0004](../adr/0004-backend-tools-via-mise.md) · [ADR 0005](../adr/0005-snip-anchors-pins-and-update-ux.md)
+[Tutorial](tutorial.md) · [Seed](seed.md) · [Catalog](catalog.md)

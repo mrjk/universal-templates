@@ -1,61 +1,72 @@
 # universal-templates
 
-Git-distributed catalog of project scaffolds and file snippets. Everyday UX is two thin CLIs:
+A **git catalog** of project scaffolds and reusable snippets, plus two small CLIs:
 
-| CLI | Job | Backend |
-|-----|-----|---------|
-| **`seed`** | Whole-project scaffolds from `projects/` | [Copier](https://copier.readthedocs.io/) |
-| **`snip`** | Files / in-file regions from `files/` | [vendir](https://carvel.dev/vendir/) |
+| CLI | Job |
+|-----|-----|
+| **`seed`** | Create / update whole projects from `projects/` |
+| **`snip`** | Add or refresh files and marked regions from `files/` |
 
-Docs: [`docs/content/`](docs/content/README.md) (start with [overview](docs/content/overview.md) and [quickstart](docs/content/quickstart.md)). Architecture: [`docs/adr/`](docs/adr/README.md).
+No package registry. Point the tools at this repo, a fork, or a local path via `UT_CATALOG_REPO`.
 
-Default catalog: `UT_CATALOG_REPO` → `https://github.com/mrjk/universal-templates.git` (override for forks / local paths).
+## Learn it
 
-## Quickstart (this repo + mise)
+Follow the guide (smooth path, real commands):
+
+1. [Overview](docs/content/overview.md) — mental model  
+2. [Tutorial](docs/content/tutorial.md) — hands-on `seed` + `snip`  
+3. [Seed](docs/content/seed.md) · [Snip](docs/content/snip.md) · [Catalog](docs/content/catalog.md)
+
+Index: [`docs/content/`](docs/content/index.md) · preview: `task docs:serve`
+
+## Try in 60 seconds (this checkout)
 
 ```bash
-mise trust          # once per machine, if prompted
-mise install        # python, copier, vendir, jq, shellcheck, bats
-seed --help         # ./bin on PATH via mise.toml
-snip --help
+git clone https://github.com/mrjk/universal-templates.git
+cd universal-templates
+mise trust && mise install          # once: python, copier, vendir, …
+export UT_CATALOG_REPO="$PWD"
+
+seed list
+seed new projects/python-base /tmp/ut-demo-app -y
+
+snip list
+snip add files/src/_fixture/snippet.sh --dest /tmp/ut-demo-snip -y
 ```
 
-```bash
-export UT_CATALOG_REPO="$PWD"   # use this checkout as catalog
-seed new projects/python-base ./my-app -y
-snip add files/src/_fixture/snippet.sh --dest /tmp/snip-demo -y
-snip sync ./some_script_with_anchors.sh
-```
+With [mise](https://mise.jdx.dev/) activated here, `./bin` is on `PATH` so `seed` / `snip` just work.
 
 ## Install notes
 
-- In-repo: activate [mise](https://mise.jdx.dev/); `bin/seed` and `bin/snip` are on `PATH`.
-- No public PyPI package — glue lives in `ut_cli/` and is run via the shims.
-- Upstream tools (`copier`, `vendir`) must be on `PATH` (mise pins them here).
+- **In-repo:** mise supplies Python, Copier, vendir; shims live in `bin/`.  
+- **No PyPI package** — run via the shims (or `PYTHONPATH=. python -m ut_cli.seed_cmd`).  
+- Default catalog URL when `UT_CATALOG_REPO` is unset:  
+  `https://github.com/mrjk/universal-templates.git`
 
-## Catalog layout (target)
+## Layout
 
 ```text
 projects/          # seed → Copier
   python-base/
-  _fixture/        # test fixture
 files/             # snip → vendir + anchors
   src/
-  bin/
-  notes/
+bin/seed  bin/snip
+ut_cli/            # thin Python glue (stdlib-first)
+docs/content/      # user guide (Zensical docs_dir)
+docs/mkdocs.yml    # Zensical config
 ```
-
-Legacy `templates/`, `parts/`, and `common/` remain for the transitional `bp` CLI.
 
 ## Development
 
 ```bash
 mise install
-task lint      # shellcheck
-task test      # bats + python unittest
+task lint    # shellcheck
+task test    # bats + python unittest
 task ci
+task docs:serve   # preview user guide (from docs/: task serve; once: task docs:install)
+
 ```
 
 ## Deprecated: `bp`
 
-`bin/bp` is a **deprecated** prototype (bash + sparse-checkout + jq). Prefer `seed` / `snip`. Do not expand `bp`'s public API; `./install.sh` still installs `bp` only for older workflows.
+`bin/bp` is an older bash prototype. Prefer **`seed` / `snip`**. Don’t expand `bp`; `./install.sh` still installs it only for legacy workflows.

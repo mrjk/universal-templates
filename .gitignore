@@ -1,4 +1,5 @@
 .venv/
 .snip/
+docs/site/
 
 **/__pycache__/**
