@@ -547,30 +547,35 @@ bp_menu() {
   bp_menu_bash_fallback "$@"
 }
 
-# --- argument parsing -------------------------------------------------------
-
-ARGS=()
-while [ "$#" -gt 0 ]; do
-  case "$1" in
-    -y|--yes) YES=1; shift ;;
-    -h|--help|help) usage; exit 0 ;;
-    *) ARGS+=("$1"); shift ;;
+dispatch() {
+  local cmd=${1:-}
+  case "$cmd" in
+    add)    shift; bp_add "$@";;
+    update) shift; bp_update "$@";;
+    remove) shift; bp_remove "$@";;
+    list)   shift; bp_list "$@";;
+    browse) shift; bp_browse "$@";;
+    new)    shift; bp_new "$@";;
+    menu)   shift; bp_menu "$@";;
+    "" )    usage; exit 1;;
+    *)      die "unknown command '$cmd' (try: bp --help)";;
   esac
-done
-set -- "${ARGS[@]+"${ARGS[@]}"}"
+}
 
-require git
-require jq
+main() {
+  local -a args=()
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      -y|--yes) YES=1; shift ;;
+      -h|--help|help) usage; exit 0 ;;
+      *) args+=("$1"); shift ;;
+    esac
+  done
+  set -- "${args[@]+"${args[@]}"}"
 
-cmd=${1:-}
-case "$cmd" in
-  add)    shift; bp_add "$@";;
-  update) shift; bp_update "$@";;
-  remove) shift; bp_remove "$@";;
-  list)   shift; bp_list "$@";;
-  browse) shift; bp_browse "$@";;
-  new)    shift; bp_new "$@";;
-  menu)   shift; bp_menu "$@";;
-  "" )    usage; exit 1;;
-  *)      die "unknown command '$cmd' (try: bp --help)";;
-esac
+  require git
+  require jq
+  dispatch "$@"
+}
+
+main "$@"
