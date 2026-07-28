@@ -1,0 +1,12 @@
+---
+description: Use go-task for tasks; mise only for env/tools
+alwaysApply: true
+---
+
+# Task runner vs mise
+
+- **Always** run project tasks with [Task](https://taskfile.dev/) (`task …`), via `Taskfile.yml` / `Taskfile.yaml`.
+- **Never** use `mise run`, `mise tasks`, or `[tasks.*]` in `mise.toml` to define or execute tasks.
+- **mise** is only for environment integration: pinned tools (`[tools]`), lockfile, and env/PATH (`[env]`, `_.path`, etc.).
+
+When adding a lint/test/ci/build/check command, add a Taskfile task and document `task <name>`. Do not add mise tasks.
