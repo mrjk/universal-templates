@@ -1,0 +1,22 @@
+# Install
+
+```bash
+pip install {{ author_name }}.{{ project_slug }}
+# or
+uv add {{ author_name }}.{{ project_slug }}
+```
+
+Then run the CLI:
+
+```bash
+{{ project_slug }} --help
+{{ project_slug }} Alice
+```
+
+From a git checkout (this repo):
+
+```bash
+mise trust && mise install
+uv sync --all-groups
+uv run {{ project_slug }} --help
+```

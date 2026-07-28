@@ -1,0 +1,76 @@
+---
+# Root Taskfile — short CI-facing surface.
+# Full CORE / docs targets: `cd ci && task` / `cd docs && task`
+# Includes are internal so they do not clutter `task --list`.
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  PKG_DIR: src/{{ project_slug }}
+  COV_PKG: {{ project_slug }}
+  PY: uv run
+
+includes:
+  core:
+    taskfile: ./ci/Taskfile.yml
+    internal: true
+    vars:
+      PKG_DIR: "{{ "{{" }}.PKG_DIR{{ "}}" }}"
+      COV_PKG: "{{ "{{" }}.COV_PKG{{ "}}" }}"
+      PY: "{{ "{{" }}.PY{{ "}}" }}"
+  docs:
+    taskfile: ./docs/Taskfile.yml
+    dir: ./docs
+    internal: true
+    vars:
+      PKG_DIR: "{{ "{{" }}.PKG_DIR{{ "}}" }}"
+      PKG: "{{ "{{" }}.PKG_DIR{{ "}}" }}"
+      PY: "{{ "{{" }}.PY{{ "}}" }}"
+
+tasks:
+
+  list:
+    desc: Show root CI tasks (cd ci|docs for more)
+    aliases:
+      - default
+    silent: true
+    cmds:
+      - task --list
+
+  clean:
+    desc: Remove local venvs, caches, and build artifacts
+    cmds:
+      - bash ./scripts/clean_workspace.sh
+
+  fix_lint:
+    desc: Auto-fix formatters (isort, black, pymarkdown)
+    cmds:
+      - task: core:fix_lint
+
+  test_core:
+    desc: CI gate without docs — unit + coverage + lint
+    cmds:
+      - task: core:test_core
+
+  test:
+    desc: Full CI gate — test_core + docs checks
+    once: true
+    cmds:
+      - task: core:test_core
+      - task: docs:test
+
+  docs:
+    desc: Serve docs locally via Zensical (cd docs && task — more)
+    cmds:
+      - task: docs:serve
+
+  publish_pypi_test:
+    desc: Publish package on test.pypi.org
+    cmds:
+      - task: core:publish_pypi_test
+
+  publish_pypi:
+    desc: Publish package on pypi.org
+    cmds:
+      - task: core:publish_pypi

@@ -1,0 +1,14 @@
+# API
+
+Public surface of `{{ project_slug }}`.
+
+```python
+from {{ project_slug }} import __version__
+from {{ project_slug }}.cli import main
+
+print(__version__)
+raise SystemExit(main(["--help"]))
+```
+
+CLI entrypoint: `{{ project_slug }}.cli:main` (console script `{{ project_slug }}`).
+Expand this page as commands and helpers grow.

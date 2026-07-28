@@ -1,0 +1,10 @@
+[MAIN]
+
+disable=
+  unknown-option-value
+
+fail-under=8
+
+[MISCELLANEOUS]
+
+notes=FIXME,XXX,TODO

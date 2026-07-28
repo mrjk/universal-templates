@@ -1,0 +1,10 @@
+---
+# {{ project_slug }} inventory
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+  children:
+    app:
+      hosts:
+        localhost:

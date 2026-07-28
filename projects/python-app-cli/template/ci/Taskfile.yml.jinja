@@ -1,0 +1,87 @@
+---
+# CORE tasks for small Python/uv CLI projects.
+# Run from repo root via include, or: cd ci && task
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  PKG_DIR: '{{ "{{" }}.PKG_DIR | default "src/{{ project_slug }}"{{ "}}" }}'
+  COV_PKG: '{{ "{{" }}.COV_PKG | default .PKG_DIR{{ "}}" }}'
+  PY: '{{ "{{" }}.PY | default "uv run"{{ "}}" }}'
+
+# Tasks run at repo root (this file lives in ci/).
+tasks:
+
+  list:
+    desc: "Show available commands"
+    aliases:
+      - default
+    silent: true
+    dir: ..
+    cmds:
+      - task --list-all
+
+  publish_pypi_test:
+    desc: Publish package on test.pypi.org
+    dir: ..
+    cmds:
+      - uv build
+      - uv publish --publish-url https://test.pypi.org/legacy/
+
+  publish_pypi:
+    desc: Publish package on pypi.org
+    dir: ..
+    cmds:
+      - uv build
+      - uv publish
+
+  fix_lint:
+    desc: Auto-fix formatters (isort, black, pymarkdown)
+    dir: ..
+    cmds:
+      - "{{ "{{" }}.PY{{ "}}" }} isort --profile black --overwrite-in-place $(git ls-files | grep '\\.py$')"
+      - "{{ "{{" }}.PY{{ "}}" }} black $(git ls-files | grep '\\.py$')"
+      - "{{ "{{" }}.PY{{ "}}" }} pymarkdownlnt fix $(git ls-files | grep '\\.md$' | grep -v 'docs/')"
+
+  test_lint:
+    desc: Python lint (isort, black --check, pylint on PKG_DIR)
+    dir: ..
+    cmds:
+      - "{{ "{{" }}.PY{{ "}}" }} isort --check-only --profile black $(git ls-files | grep '\\.py$')"
+      - "{{ "{{" }}.PY{{ "}}" }} black --check $(git ls-files | grep '\\.py$')"
+      - "{{ "{{" }}.PY{{ "}}" }} pylint $(git ls-files | grep '\\.py$' | grep '{{ "{{" }}.PKG_DIR{{ "}}" }}/')"
+
+  test_lint_core:
+    desc: CORE lint (python + yaml + markdown + shell) — no docs
+    dir: ..
+    cmds:
+      - task: test_lint
+      - "{{ "{{" }}.PY{{ "}}" }} yamllint $(git ls-files | grep '\\.yml$')"
+      - "{{ "{{" }}.PY{{ "}}" }} pymarkdownlnt scan $(git ls-files | grep '\\.md$' | grep -v 'docs/')"
+      - |
+        files=$(git ls-files | grep '\.sh$' || true)
+        if [ -n "$files" ]; then shellcheck $files; fi
+
+  test_unit:
+    desc: Unit tests
+    once: true
+    dir: ..
+    cmds:
+      - "{{ "{{" }}.PY{{ "}}" }} pytest tests/ -vv"
+
+  test_report:
+    desc: Coverage report for COV_PKG
+    once: true
+    dir: ..
+    cmds:
+      - "{{ "{{" }}.PY{{ "}}" }} pytest tests/ --tb no -q --cov={{ "{{" }}.COV_PKG{{ "}}" }} --cov-report term-missing"
+
+  test_core:
+    desc: Portable gate — unit + coverage + lint_core
+    once: true
+    dir: ..
+    cmds:
+      - task: test_unit
+      - task: test_report
+      - task: test_lint_core

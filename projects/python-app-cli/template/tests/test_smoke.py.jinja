@@ -1,0 +1,19 @@
+"""Smoke tests for {{ project_slug }}."""
+
+from {{ project_slug }} import __version__
+from {{ project_slug }}.cli import main
+
+
+def test_version_is_set():
+    assert __version__
+    assert isinstance(__version__, str)
+
+
+def test_cli_greets_default(capsys):
+    assert main([]) == 0
+    assert capsys.readouterr().out.strip() == "Hello, world!"
+
+
+def test_cli_greets_name(capsys):
+    assert main(["friend"]) == 0
+    assert capsys.readouterr().out.strip() == "Hello, friend!"

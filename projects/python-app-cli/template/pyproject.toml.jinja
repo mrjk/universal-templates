@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "{{ author_name }}.{{ project_slug }}"
+dynamic = ["version"]
+description = "{{ description }}"
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+license = { text = "GPL-3.0-or-later" }
+authors = [
+    { name = "{{ author_name }}", email = "{{ author_email }}" },
+]
+dependencies = []
+
+[project.scripts]
+{{ project_slug }} = "{{ project_slug }}.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/{{ github_owner }}/{{ github_repo }}"
+Documentation = "https://{{ github_owner }}.github.io/{{ github_repo }}/"
+Repository = "https://github.com/{{ github_owner }}/{{ github_repo }}"
+
+[dependency-groups]
+dev = [
+    "black>=24.10.0",
+    "isort>=6.0.1",
+    "pylint>=3.3.3",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "pymarkdownlnt>=0.9.26",
+    "yamllint>=1.35.1",
+]
+docs = [
+    "zensical>=0.0.51",
+    "pymarkdownlnt>=0.9.26",
+    "ghp-import>=2.1.0",
+]
+
+[tool.hatch.version]
+path = "src/{{ project_slug }}/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/{{ project_slug }}"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["src", "tests"]
+
+[tool.isort]
+profile = "black"

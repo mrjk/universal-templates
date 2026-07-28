@@ -1,0 +1,48 @@
+# {{ project_slug }}
+
+{{ description }}
+
+## Setup
+
+```bash
+mise trust && mise install
+uv sync --all-groups
+```
+
+With mise activated, `task` and `uv` are on your `PATH`. After `uv sync`, project tools live in `.venv`.
+
+## Run
+
+```bash
+{{ project_slug }} --help
+{{ project_slug }} Alice
+# or
+uv run {{ project_slug }} Alice
+python -m {{ project_slug }} Alice
+```
+
+## Tasks
+
+Root `task --list` stays short (CI-facing). More targets live under `ci/` and `docs/`.
+
+```bash
+task               # list root tasks (one entry per topic)
+task test          # full CI gate (core + docs)
+task test_core     # unit + coverage + lint (no docs)
+task fix_lint      # auto-fix formatters
+task docs          # serve docs (Zensical)
+
+cd docs && task    # full docs menu (serve, build, publish, …)
+cd ci && task      # full CI menu (lint slices, unit, coverage, …)
+```
+
+## Docs
+
+[Zensical](https://zensical.org/) site under `docs/` (config: `docs/mkdocs.yml`). Shortcut: `task docs`.
+
+## Release
+
+```bash
+./scripts/release.sh patch   # bump, commit, tag
+git push && git push --tags
+```

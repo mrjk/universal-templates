@@ -1,0 +1,15 @@
+_subdirectory: template
+_min_copier_version: "9.0.0"
+
+project_slug:
+  type: str
+  help: Project slug (directory-friendly name)
+  validator: >-
+    {% if not (project_slug | regex_search('^[a-z][a-z0-9_-]*$')) %}
+    Must be lowercase, start with a letter; digits, hyphens, underscores ok
+    {% endif %}
+
+description:
+  type: str
+  help: Short project description
+  default: "An Ansible project"

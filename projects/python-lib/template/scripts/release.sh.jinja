@@ -1,0 +1,182 @@
+#!/usr/bin/env bash
+# Bump package version in PKG_DIR/__init__.py, commit, and tag.
+# Version is the hatch dynamic source (see pyproject.toml).
+
+set -euo pipefail
+
+PKG_DIR="${PKG_DIR:-src/{{ project_slug }}}"
+
+show_help() {
+    cat << EOF
+Usage: $(basename "$0") [OPTIONS] VERSION
+
+Update project version and create a git tag.
+
+Arguments:
+    VERSION     Exact version (e.g. 1.2.3) or bump keyword:
+                major | minor | patch
+
+Options:
+    -h, --help     Show this help message
+    --dry-run      Show what would happen without writing
+
+Examples:
+    $(basename "$0") 1.2.3
+    $(basename "$0") patch
+    $(basename "$0") --dry-run minor
+
+Project info:
+    Package dir (PKG_DIR): $(get_pkg_dir)
+    Current version: $(get_current_version)
+EOF
+    exit 0
+}
+
+get_pkg_dir() {
+    echo "${PKG_DIR}"
+}
+
+get_init_file() {
+    echo "$(get_pkg_dir)/__init__.py"
+}
+
+get_current_version() {
+    local init
+    init="$(get_init_file)"
+    python3 - "$init" <<'PY'
+import re, sys
+text = open(sys.argv[1], encoding="utf-8").read()
+m = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', text)
+if not m:
+    raise SystemExit(f"__version__ not found in {sys.argv[1]}")
+print(m.group(1))
+PY
+}
+
+bump_semver() {
+    local current="$1" part="$2"
+    python3 - "$current" "$part" <<'PY'
+import sys
+ver, part = sys.argv[1], sys.argv[2]
+bits = [int(x) for x in ver.split(".")]
+while len(bits) < 3:
+    bits.append(0)
+major, minor, patch = bits[0], bits[1], bits[2]
+if part == "major":
+    major, minor, patch = major + 1, 0, 0
+elif part == "minor":
+    minor, patch = minor + 1, 0
+elif part == "patch":
+    patch += 1
+else:
+    raise SystemExit(f"unknown bump keyword: {part}")
+print(f"{major}.{minor}.{patch}")
+PY
+}
+
+is_prerelease_token() {
+    [[ "$1" == pre* ]]
+}
+
+check_args() {
+    if [ $# -eq 0 ] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]] || [[ "$1" == "help" ]]; then
+        show_help
+    fi
+}
+
+check_branch() {
+    local current_branch
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+    local token="$1"
+
+    if is_prerelease_token "$token"; then
+        if [[ "$current_branch" == "main" || "$current_branch" == "master" ]]; then
+            echo "Error: Pre-release versions cannot be created on main/master"
+            exit 1
+        fi
+    else
+        if [[ "$current_branch" != "main" && "$current_branch" != "master" ]]; then
+            echo "Error: Must be on main or master for regular releases"
+            exit 1
+        fi
+    fi
+}
+
+check_git_status() {
+    if ! git diff-index --quiet HEAD --; then
+        echo "Error: There are uncommitted changes in the repository"
+        git status -sb
+        exit 1
+    fi
+}
+
+set_version() {
+    local new_version="$1"
+    local init
+    init="$(get_init_file)"
+    python3 - "$init" "$new_version" <<'PY'
+import re, sys
+path, ver = sys.argv[1], sys.argv[2]
+text = open(path, encoding="utf-8").read()
+new, n = re.subn(
+    r'(__version__\s*=\s*)(["\'])([^"\']+)(["\'])',
+    rf"\1\2{ver}\4",
+    text,
+    count=1,
+)
+if n != 1:
+    raise SystemExit(f"failed to update __version__ in {path}")
+open(path, "w", encoding="utf-8").write(new)
+print(ver)
+PY
+}
+
+resolve_version() {
+    local arg="$1"
+    case "$arg" in
+        major|minor|patch) bump_semver "$(get_current_version)" "$arg" ;;
+        *) echo "$arg" ;;
+    esac
+}
+
+commit_and_tag() {
+    local version="$1"
+    local init
+    init="$(get_init_file)"
+    git add "$init"
+    git commit -m "bump: version v${version}" "$init"
+    git tag -m "release: version v${version}" "v${version}"
+}
+
+main() {
+    local dry_run=0
+    local version_arg=""
+
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --dry-run) dry_run=1; shift ;;
+            -h|--help|help) show_help ;;
+            *) version_arg="$1"; shift; break ;;
+        esac
+    done
+
+    check_args ${version_arg:+"$version_arg"}
+    check_branch "$version_arg"
+    check_git_status
+
+    local new_version
+    new_version="$(resolve_version "$version_arg")"
+    echo ">>> ${dry_run:+Dry-run: }bump $(get_current_version) -> ${new_version}"
+
+    if [ "$dry_run" -eq 1 ]; then
+        echo ">>> Dry run completed"
+        exit 0
+    fi
+
+    set_version "$new_version"
+    commit_and_tag "$new_version"
+    echo ">>> Release process completed"
+    echo ">>> Use 'git push && git push --tags' to publish"
+}
+
+main "$@"

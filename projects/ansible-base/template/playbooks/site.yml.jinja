@@ -1,0 +1,8 @@
+---
+# {{ project_slug }} — {{ description }}
+- name: Site playbook
+  hosts: all
+  become: false
+  tasks:
+    - name: Ping hosts
+      ansible.builtin.ping:

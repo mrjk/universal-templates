@@ -1,0 +1,16 @@
+# Quickstart
+
+```bash
+{{ project_slug }} --help
+{{ project_slug }} Alice
+# or
+python -m {{ project_slug }} Alice
+```
+
+Programmatic use:
+
+```python
+from {{ project_slug }}.cli import main
+
+raise SystemExit(main(["Alice"]))
+```

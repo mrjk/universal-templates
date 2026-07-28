@@ -1,0 +1,36 @@
+_subdirectory: template
+# ≥9.7: deleted destination paths stay deleted on update (needed for README_seed.md)
+_min_copier_version: "9.7.0"
+
+project_slug:
+  type: str
+  help: Python package / CLI command name (import + console script)
+  validator: >-
+    {% if not (project_slug | regex_search('^[a-z][a-z0-9_]*$')) %}
+    Must be a valid Python identifier: lowercase, digits, underscores
+    {% endif %}
+
+description:
+  type: str
+  help: Short project description
+  default: "A Python CLI application"
+
+author_name:
+  type: str
+  help: Author name for pyproject metadata (also PyPI name prefix)
+  default: "mrjk"
+
+author_email:
+  type: str
+  help: Author email for pyproject metadata
+  default: "mrjk.78@gmail.com"
+
+github_owner:
+  type: str
+  help: GitHub org or user (docs / repo URLs)
+  default: "mrjk"
+
+github_repo:
+  type: str
+  help: GitHub repository name
+  default: "{{ project_slug }}"

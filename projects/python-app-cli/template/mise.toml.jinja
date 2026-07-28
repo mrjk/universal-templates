@@ -1,0 +1,13 @@
+# Tool pins for local + CI. Override Python in Actions with PYTHON_VERSION.
+# https://mise.jdx.dev/
+#
+# Do NOT define mise [tasks.*] here — use Taskfile.yml (`task …`).
+
+[tools]
+python = "{{ "{{" }} get_env(name='PYTHON_VERSION', default='3.12') {{ "}}" }}"
+task = "3.52.0"
+uv = "0.11.28"
+shellcheck = "0.11.0"
+
+[env]
+_.path = ["{{ "{{" }}config_root{{ "}}" }}/.venv/bin"]

@@ -1,0 +1,32 @@
+---
+name: gen-documentation
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Setup CI
+        uses: ./.github/actions/setup-ci
+        with:
+          python_version: "3.12"
+          uv_args: "--all-groups"
+
+      - name: Publish documentation
+        run: task docs:publish

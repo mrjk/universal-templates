@@ -1,0 +1,40 @@
+# Zensical reads mkdocs.yml (Material for MkDocs successor).
+# From repo root:  task docs
+# From docs/:      task serve
+
+site_name: {{ project_slug }}
+site_description: {{ description }}
+site_url: https://{{ github_owner }}.github.io/{{ github_repo }}/
+repo_url: https://github.com/{{ github_owner }}/{{ github_repo }}
+repo_name: {{ github_owner }}/{{ github_repo }}
+
+docs_dir: content
+site_dir: site
+dev_addr: localhost:8089
+
+theme:
+  variant: modern
+
+nav:
+  - Home: index.md
+  - Quickstart:
+      - Install: quickstart/install.md
+      - Quickstart: quickstart/quickstart.md
+  - Guides:
+      - First steps: guides/index.md
+  - Reference:
+      - API: api/index.md
+      - Architecture: architecture/overview.md
+  - About:
+      - Development setup: project/setup.md
+      - Release: project/release.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true

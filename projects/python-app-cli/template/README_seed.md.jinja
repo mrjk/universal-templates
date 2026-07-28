@@ -1,0 +1,54 @@
+# Seed bootstrap — {{ project_slug }}
+
+One-shot guide after `seed new`. **Delete this file when you are done**;
+`seed sync` will not recreate it (Copier keeps deleted template paths deleted
+on update). Use `copier recopy` / a fresh seed if you want it back.
+
+## 1. Trust tools and install
+
+```bash
+mise trust && mise install
+uv sync --all-groups
+```
+
+## 2. Sanity check
+
+```bash
+{{ project_slug }} --help
+{{ project_slug }} Alice
+
+task               # short CI list at repo root
+task test_core     # unit + coverage + lint
+task test          # full gate + docs
+
+cd ci && task      # finer CORE targets
+cd docs && task    # Zensical targets
+```
+
+## 3. Fill in the project
+
+- Extend the CLI in `src/{{ project_slug }}/cli.py` (argparse for now)
+- Grow tests under `tests/`
+- Edit docs under `docs/content/` (Zensical / `mkdocs.yml`)
+- Set real GitHub / PyPI secrets when you enable publish workflows
+
+## 4. Day-to-day
+
+| Command | Purpose |
+| --- | --- |
+| `{{ project_slug }} …` | Run the console script |
+| `task test_core` | Unit + coverage + lint (no docs) |
+| `task test` | Full gate including docs |
+| `task fix_lint` | Auto-fix isort / black / markdown |
+| `task docs` | Serve docs via Zensical (`cd docs && task` for more) |
+| `./scripts/release.sh patch` | Bump version, commit, tag |
+
+## 5. Syncing the seed later
+
+```bash
+seed sync          # confirm, then apply catalog updates
+seed sync -y       # non-interactive
+```
+
+Managed files follow the template; paths you deleted stay gone unless you
+recopy them on purpose.
