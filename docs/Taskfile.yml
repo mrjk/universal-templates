@@ -10,9 +10,12 @@ tasks:
   serve:
     desc: Preview docs at http://localhost:8089
     cmds:
+      # Drop Zensical page cache so macros re-scan projects/ + files/
+      - rm -rf .cache
       - zensical serve -f mkdocs.yml
 
   build:
     desc: Build static site into site/
     cmds:
+      - rm -rf .cache
       - zensical build -f mkdocs.yml

@@ -1,5 +1,6 @@
 .venv/
 .snip/
 docs/site/
+mise.local.toml
 
 **/__pycache__/**

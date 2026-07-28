@@ -6,21 +6,31 @@ Same habits as [`seed`](seed.md): `$UT_CATALOG_REPO`, list/browse, sync, pins, d
 
 ## When to use `snip`
 
-- Shared helpers copy-pasted into many scripts  
-- Drop a catalog file into a project folder  
-- Interactive refresh: pick blocks → diff → confirm  
+- Shared helpers copy-pasted into many scripts (**inject**)
+- Whole scripts shipped as customizable templates (**boilerplate**)
+- Drop a catalog file into a project folder
+- Interactive refresh: pick blocks → diff → confirm
 
 Use [`seed`](seed.md) for a full new project tree.
+
+### Two ownership modes
+
+| Mode | Who owns the frame | Who owns the holes | Markers |
+|------|--------------------|--------------------|---------|
+| **Inject** | You | Catalog (`snip:id=`) | Regions filled from `files/` |
+| **Boilerplate** | Catalog | You (`snip:slot=`) | Slots preserved on sync |
+
+Do not mix `snip:id=` and `snip:slot=` in the same file.
 
 ## Commands
 
 ```bash
 snip                          # numbered menu of files/ → add into cwd
 snip list                     # catalog paths under files/
-snip list <file>              # anchors / header pins in a local file
+snip list <file>              # anchors / slots / header pins in a local file
 snip add <catalog-path> [--dest DIR] [--ref REF] [-y]
 snip sync                     # re-sync paths previously added (tracked)
-snip sync <file> [--ref REF] [-y]   # update anchors in that file
+snip sync <file> [--ref REF] [-y]   # update inject anchors or boilerplate slots
 ```
 
 ## Path 1 — add a whole file
@@ -77,18 +87,79 @@ Comment style follows the host language (`#`, `//`, …). Grammar lives in `ut_c
 
 ### Optional file header
 
-Whole-file units may advertise source + version:
+Whole-file units carry **snip-managed** metadata comments (always prefixed with `snip:`). These are not part of the script logic; sync rewrites `ref=` / `version=` to the pin just applied.
 
 ```bash
 #!/usr/bin/env bash
 # snip: sync with: snip sync %FILE%
-# Template source: https://github.com/mrjk/universal-templates.git
-# curr_version: 1.2.3
+# snip: path=files/bin/example.sh ref=1.2.3
+# snip: source=https://github.com/mrjk/universal-templates.git
+# snip: version=1.2.3
 ```
+
+| Line | Meaning |
+|------|---------|
+| `snip: sync with:` | Hint for humans / agents |
+| `snip: path=` / `ref=` | Catalog unit + pin (required for boilerplate `snip sync <file>`) |
+| `snip: source=` | Catalog git URL |
+| `snip: version=` | Same pin as `ref=` (bumped on sync) |
+
+Lines **without** a `snip:` prefix (e.g. `TEMPLATE_VERSION=…`, `APP_VERSION=…`) are yours — snip does not manage them.
+
+Legacy `Template source:` / `curr_version:` headers are still read, but new templates should use the `snip:` form.
+
+## Path 3 — boilerplate (catalog owns the frame)
+
+Ship a full script from the catalog with named **slots** for user customizations. On sync, the frame is replaced from catalog; slot bodies are preserved.
+
+Catalog template (`files/src/_fixture/boilerplate.sh` shape):
+
+```bash
+#!/usr/bin/env bash
+# snip: sync with: snip sync %FILE%
+# snip: path=files/src/_fixture/boilerplate.sh ref=main
+# snip: source=https://github.com/mrjk/universal-templates.git
+# snip: version=main
+FRAME_MARKER=v1
+# >>> snip:slot=main
+# <<< snip:slot=main
+echo done
+```
+
+Consumer after edit:
+
+```bash
+# … same header …
+FRAME_MARKER=v1
+# >>> snip:slot=main
+echo custom-user
+# <<< snip:slot=main
+echo done
+```
+
+```bash
+snip add files/src/_fixture/boilerplate.sh --dest . -y
+# edit slot bodies
+snip sync ./boilerplate.sh -y    # frame updates; slots kept
+snip list ./boilerplate.sh       # shows slot:main
+```
+
+| Field | Meaning |
+|-------|---------|
+| `snip: path=` / `ref=` | Catalog unit + pin (required for `snip sync <file>`) |
+| `snip: source=` / `version=` | Catalog URL + pin display (bumped on sync) |
+| `snip:slot=NAME` | User-owned hole; begin/end must match |
+
+Orphan slots (present locally but removed from catalog) are dropped with a warning.
 
 ## Policy
 
-After you confirm, **catalog wins** for that file or region. No silent clobber in interactive mode. `-y` is for CI and scripts.
+After you confirm:
+
+- **Inject:** catalog wins inside `snip:id=` regions.
+- **Boilerplate:** catalog wins the frame; **user wins** inside `snip:slot=` regions.
+
+No silent clobber in interactive mode. `-y` is for CI and scripts.
 
 ## Catalog areas
 

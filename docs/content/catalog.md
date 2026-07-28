@@ -58,8 +58,8 @@ Same commands, your content — no registry account.
 ```
 
 ```bash
-# Template source: https://github.com/YOU/my-catalog.git
-# curr_version: v1.2.3
+# snip: source=https://github.com/YOU/my-catalog.git
+# snip: version=v1.2.3
 ```
 
 ## Adding content (authors)

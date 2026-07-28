@@ -37,24 +37,39 @@ Whole-file units may carry a header instead of (or in addition to) region anchor
 ```bash
 #!/usr/bin/env bash
 # snip: sync with: snip sync %FILE%
-# Template source: https://github.com/mrjk/universal-templates.git
-# curr_version: 1.2.3
+# snip: path=files/bin/example.sh ref=1.2.3
+# snip: source=https://github.com/mrjk/universal-templates.git
+# snip: version=1.2.3
 ```
+
+All snip-managed file metadata uses the `snip:` comment prefix. `path` / `ref` are required for **boilerplate** whole-file sync so the consumer file is self-describing without `.snip/` state. `version` mirrors `ref` and is bumped on sync.
+
+### Two ownership modes (same CLI)
+
+| Mode | Markers | Ownership |
+|------|---------|-----------|
+| **Inject** | `snip:id=` | User owns frame; catalog fills regions |
+| **Boilerplate** | `snip:slot=` + header `path`/`ref` | Catalog owns frame; user fills slots |
+
+- Stay in **`snip`** (no third CLI); vendir remains fetch/lock only; merge is glue.
+- A file must not mix `snip:id=` and `snip:slot=` (v1).
+- Boilerplate sync: fetch catalog template → merge consumer slot bodies by name → diff → confirm → write; bump header pin. Orphan local slots warn and drop.
+- Tracked `snip sync` / re-`add` must merge when the destination already has slots (never blind overwrite of user holes).
+- Region-level “envelope” blocks inside a user-owned file are out of scope for v1.
 
 ### `snip sync <file>` flow
 
-1. Parse anchors and/or file header.
-2. Resolve each portion against `UT_CATALOG_REPO` at the pinned ref (offer newer when appropriate).
-3. Interactive menu: which portions to update.
-4. Show **diff** → **confirm** → **catalog wins** for selected regions (or whole file).
-5. Skip or remove paths when the user chooses erase/remove flows.
+1. Parse inject anchors, slots, and/or file header; reject mixed modes.
+2. **Inject:** resolve each selected region against `UT_CATALOG_REPO` at the pinned ref; menu → diff → confirm → catalog wins inside regions.
+3. **Boilerplate:** resolve header `path` @ `ref`; merge slots into fresh catalog bytes; diff → confirm → catalog wins frame, user wins slots.
+4. Skip or remove paths when the user chooses erase/remove flows.
 
 ### Update UX (both `seed` and `snip`)
 
-- Default: interactive **diff → confirm → catalog overwrites**.
+- Default: interactive **diff → confirm → apply**.
 - Non-interactive: `-y` (CI-friendly).
 - **No silent clobber** in interactive mode.
-- **No three-way merge as v1 default** for snip regions. Upstream tools may still surface their own conflict behavior; wrappers present a single confirm-oriented flow where we control it.
+- **No three-way merge as v1 default.** Inject: catalog wins selected regions. Boilerplate: catalog wins frame; slots are user-preserved by name (not a textual 3-way merge).
 
 ### Project updates (`seed sync`)
 

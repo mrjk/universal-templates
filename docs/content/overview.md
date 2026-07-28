@@ -33,7 +33,7 @@ You talk to **`seed` / `snip`**, not to Copier or vendir day-to-day.
 
 1. **The catalog** is the source of truth (this repo, a fork, or a local path).
 2. **`seed`** grows or updates a **project directory**.
-3. **`snip`** refreshes **whole files** or **marked regions** inside a file.
+3. **`snip`** refreshes **whole files**, **inject regions** (`snip:id=`), or **boilerplate slots** (`snip:slot=`).
 4. **Pins** (git refs / tags) record which version you applied.
 5. Updates are never silent: you see a **diff**, confirm, then **catalog wins** (or pass `-y` for CI).
 

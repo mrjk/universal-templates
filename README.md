@@ -48,6 +48,7 @@ With [mise](https://mise.jdx.dev/) activated here, `./bin` is on `PATH` so `seed
 ```text
 projects/          # seed → Copier
   python-base/
+  ansible-base/
 files/             # snip → vendir + anchors
   src/
 bin/seed  bin/snip

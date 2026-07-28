@@ -134,7 +134,7 @@ Anchor sketch (lock this grammar in code + one doc note if refined):
 # <<< snip:id=NAME
 ```
 
-Plus optional file-level header (`Template source`, `curr_version`).
+Plus optional file-level header (`snip: path=` / `ref=` / `source=` / `version=`).
 
 Flow:
 
