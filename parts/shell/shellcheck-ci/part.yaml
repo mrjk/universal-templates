@@ -1,0 +1,4 @@
+name: shellcheck-ci
+description: "placeholder"
+language: placeholder
+files_dir: files

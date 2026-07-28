@@ -1,0 +1,4 @@
+# placeholder — filled in commit 4
+project_slug:
+  type: str
+  help: Project slug
