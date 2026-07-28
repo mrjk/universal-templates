@@ -1,8 +1,7 @@
-# Dev / CI tooling for this repo (bp CLI + templates).
+# Dev / CI tooling for this repo (seed/snip + legacy bp).
 # Setup: mise trust && mise install
 # Lockfile: mise.lock (checksums/URLs for reproducible installs)
-# With `mise activate`, [env]._.path puts ./bin on PATH so `bp` works in-repo
-# without ./install.sh (install.sh is only for a global ~/.local/bin copy).
+# With `mise activate`, [env]._.path puts ./bin on PATH so `seed`/`snip`/`bp` work in-repo.
 #
 # Do NOT define mise [tasks.*] here — use Taskfile.yml (`task lint|test|ci`).
 
@@ -12,6 +11,7 @@ shellcheck = "0.11.0"
 bats = "1.14.0"
 python = "3.12.13"
 copier = "9.17.0"
+vendir = "0.46.0"
 
 # Expose ./bin/bp on PATH when this directory is active (mise activate / mise trust).
 # Auto-create/activate .venv so `python`/`pip` are project-local while cd'd here.

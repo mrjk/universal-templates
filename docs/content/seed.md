@@ -55,15 +55,9 @@ seed
 
 `seed` invokes Copier (`copy` / `update`) and keeps mise’s `copier` on PATH. Authors still write Copier templates under `projects/`; consumers should not need Copier’s CLI for everyday use. See [ADR 0004](../adr/0004-backend-tools-via-mise.md).
 
-## Transitional (no `seed` binary yet)
+## Transitional notes
 
-While the wrapper is missing, contributors can call Copier on a local checkout path — that is a **dev escape hatch**, not the product UX:
-
-```bash
-copier copy /path/to/universal-templates/templates/python ./my-app
-```
-
-Prefer waiting for / implementing `seed` for the documented flow. Layout is migrating `templates/` → `projects/` ([Status](status.md)).
+Prefer `seed` over calling Copier directly. Legacy Copier trees under `templates/` still work for `bp`; new work lives under `projects/` (e.g. `projects/python-base`).
 
 ## Related
 

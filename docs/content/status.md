@@ -13,22 +13,21 @@ Product intent vs what the tree does today.
 
 Docs in [`docs/content/`](README.md) describe that target.
 
-## Today (transitional)
+## Today
 
 | Piece | Current state |
 |-------|----------------|
-| CLIs | `bin/bp` prototype — **not** the long-term UX |
-| Catalog roots | Legacy `templates/`, `parts/`, `common/` → migrating |
-| `UT_CATALOG_REPO` | Set in `mise.toml`; wire into `seed`/`snip` as they land |
-| Copier | Available via mise; usable as a **dev escape hatch** |
-| vendir | Not wired yet; required for `snip` implementation |
-| Anchor `snip sync` | Specified in docs/ADRs; not the shipped interface yet |
-
-Prefer implementing **`seed` / `snip`** wrappers over extending `bp`.
+| CLIs | **`bin/seed`** / **`bin/snip`** (`ut_cli/`) — primary UX |
+| Catalog roots | `projects/` (incl. `python-base`, `_fixture`) + `files/src/_fixture/`; legacy `templates/`, `parts/`, `common/` still present |
+| `UT_CATALOG_REPO` | Set in `mise.toml`; honored by seed/snip |
+| Copier | Pinned via mise; wrapped by `seed` |
+| vendir | Pinned via mise; wrapped by `snip` |
+| Anchor `snip sync <file>` | Implemented (`ut_cli/anchors.py`) |
+| `bp` | Deprecated prototype — still works; do not extend |
 
 ## How to read the docs
 
 1. [Overview](overview.md) + [Quickstart](quickstart.md)  
 2. [Seed](seed.md) / [Snip](snip.md) / [Catalog](catalog.md)  
 3. [ADR 0004](../adr/0004-backend-tools-via-mise.md) — Copier or vendir, unified UX  
-4. Root `README.md` may still describe `bp` until rewritten
+4. Root [`README.md`](../../README.md) for install + mise

@@ -57,6 +57,10 @@ updated logging-setup → ref=1.3.0
 
 **Policy:** after confirm, **catalog wins** for that region (`-y` only for non-interactive/CI).
 
+Comment style follows the host language (`#`, `//`, and similar prefixes). Begin/end ids must match.
+
+Exact grammar is implemented in `ut_cli/anchors.py`.
+
 ## Autonomous file header
 
 ```bash
