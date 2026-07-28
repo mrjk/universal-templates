@@ -1,0 +1,55 @@
+---
+description: Prefer small functions over monolithic top-level / main bodies
+alwaysApply: true
+---
+
+# Prefer functions over monolithic main
+
+Structure code as small, named functions. Keep entrypoints thin: parse args, call helpers, exit. Do not put the whole program in the top-level script body or a single large `main`.
+
+## Do
+
+- Extract steps into named functions (resolve, validate, transform, write, …)
+- Keep `main` / `__main__` / CLI dispatch to orchestration only
+- Prefer reusable helpers over copy-pasted blocks in the entrypoint
+
+## Don't
+
+- Long imperative scripts with all logic at file top level
+- One giant `main` that contains every branch and side effect
+- Structural or behavior changes just to “use functions” — refactor style only unless asked
+
+## Examples
+
+```bash
+# ❌ BAD — work at top level
+need git
+src=...
+cp "$src" "$dest"
+
+# ✅ GOOD — thin main
+resolve_src() { ... }
+install_bp() { ... }
+main() {
+  need git
+  resolve_src
+  install_bp
+}
+main "$@"
+```
+
+```python
+# ❌ BAD
+if __name__ == "__main__":
+    # dozens of lines of logic here
+
+# ✅ GOOD
+def main() -> None:
+    path = find_tool()
+    run(path, parse_args())
+
+if __name__ == "__main__":
+    main()
+```
+
+Applies to shell, Python, and other languages in this repo. Same behavior; clearer structure.
