@@ -1,4 +1,0 @@
-name: gitignore
-description: "Sensible root .gitignore for mixed Python/shell projects"
-language: common
-files_dir: files

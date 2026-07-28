@@ -61,12 +61,9 @@ docs/mkdocs.yml    # Zensical config
 ```bash
 mise install
 task lint    # shellcheck
-task test    # bats + python unittest
+task test    # python unittest
 task ci
 task docs:serve   # preview user guide (from docs/: task serve; once: task docs:install)
 
 ```
 
-## Deprecated: `bp`
-
-`bin/bp` is an older bash prototype. Prefer **`seed` / `snip`**. Don’t expand `bp`; `./install.sh` still installs it only for legacy workflows.

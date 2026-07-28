@@ -58,9 +58,9 @@ Wrappers own:
 - Menus, `UT_CATALOG_REPO` defaults, pin/header helpers
 - For **in-file regions** ([ADR 0005](0005-snip-anchors-pins-and-update-ux.md)): parse anchors, let the user pick portions, show diff/confirm, then apply content that was **fetched via the vendir-backed catalog path** (or an equivalent fetch already owned by the snip→vendir integration). Region apply is glue; **fetch/lock of catalog bytes is vendir’s job**, not a parallel package manager.
 
-### Relation to `bp`
+### Relation to former `bp`
 
-`bp` is a prototype. Long-term = unified `seed`/`snip` wrapping **Copier or vendir** only.
+`bp` was a prototype and has been removed. Long-term = unified `seed`/`snip` wrapping **Copier or vendir** only.
 
 ## Consequences
 

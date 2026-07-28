@@ -56,8 +56,8 @@ Backend: **vendir** via mise for catalog fetch/lock of `files/*`, plus thin glue
 
 ### Transition
 
-- Document `bp` as deprecated once `seed` / `snip` exist.
-- Do not expand `bp`’s public API; replace it.
+- `bp` is **removed**; `seed` / `snip` replaced it.
+- Do not reintroduce a kitchen-sink CLI under the `bp` name.
 
 ## Consequences
 

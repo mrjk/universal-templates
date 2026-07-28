@@ -8,24 +8,18 @@ includes:
 
 tasks:
   lint:
-    desc: ShellCheck bp, install.sh, seed, snip
+    desc: ShellCheck seed and snip shims
     cmds:
-      - shellcheck bin/bp install.sh bin/seed bin/snip
+      - shellcheck bin/seed bin/snip
 
   test:py:
     desc: Run Python unittest suite for ut_cli
     cmds:
       - python -m unittest discover -s tests -p 'test_*.py' -v
 
-  test:bats:
-    desc: Run bats tests for bp
-    cmds:
-      - bats tests/bp.bats
-
   test:
-    desc: Run bats + Python tests
+    desc: Run Python tests
     cmds:
-      - task: test:bats
       - task: test:py
 
   ci:

@@ -1,4 +1,0 @@
-name: pytest
-description: "pytest + basic test scaffold"
-language: python
-files_dir: files

@@ -35,9 +35,9 @@ Sibling folders under `misc_templates/` (e.g. full Python project templates) sho
 - Exposing Copier/vendir as the primary user-facing interface
 - Turning this repository into a Poetry/packaging-centric Python product
 
-### Relation to current `bp`
+### Relation to former `bp`
 
-`bin/bp` is a **transitional prototype**. Useful ideas (git fetch, install state, diff/confirm) may be reused. It is **not** the long-term user-facing product and should not gain features as if it were `seed`/`snip`.
+`bin/bp` was a transitional bash prototype. It has been **removed**; `seed` / `snip` are the only user-facing CLIs. Useful ideas (git fetch, install state, diff/confirm) live on in those tools where relevant.
 
 ## Consequences
 

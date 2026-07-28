@@ -62,7 +62,7 @@ seed sync --ref v1.2.3
 
 ## What’s in this catalog today
 
-See **[Inventory](inventory.md)** for the live list of `projects/`. More scaffolds land there over time. Legacy trees still live under `templates/` for the deprecated `bp` CLI — prefer `projects/` for new work.
+See **[Inventory](inventory.md)** for the live list of `projects/`. More scaffolds land there over time.
 
 ## Menu browse
 

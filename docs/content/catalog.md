@@ -29,8 +29,6 @@ files/                    # snip → vendir (+ anchors)
 | Project | `projects/<name>/` | `seed new projects/<name>` |
 | Fragment / file | `files/…` | `snip add` / `snip sync` |
 
-Legacy `templates/`, `parts/`, `common/` still exist for the deprecated `bp` CLI and will migrate gradually ([Status](status.md)).
-
 What’s currently shipped: **[Inventory](inventory.md)** (live from disk).
 
 ## Host your own

@@ -20,8 +20,8 @@ Users talk to `seed` / `snip` only. Default catalog: `UT_CATALOG_REPO` → `http
 3. **No third sync engine** (no fsrc/path-sync/custom package manager).
 4. Keep modules **compact and small** — prefer many small files over large god-modules.
 5. Shared code in a small common package; do not duplicate catalog/diff/confirm logic.
-6. Do **not** extend `bin/bp` as the product. Leave it; new entrypoints are `seed` / `snip`.
-7. Do **not** mass-migrate catalog trees in the first PR unless needed for a smoke test; can work against local paths and stub `projects/` / `files/` fixtures in tests.
+6. Do **not** reintroduce `bp` or a kitchen-sink CLI; entrypoints are `seed` / `snip` only.
+7. Catalog content lives under `projects/` and `files/` only (legacy `templates/` / `parts/` / `common/` are gone).
 8. Follow existing repo style: functions preferred, Taskfile for lint/test (not mise tasks).
 
 ## Suggested layout (keep small)
@@ -30,7 +30,6 @@ Users talk to `seed` / `snip` only. Default catalog: `UT_CATALOG_REPO` → `http
 bin/
   seed                 # shebang → python -m ut_cli.seed
   snip                 # shebang → python -m ut_cli.snip
-cli/                   # optional: keep empty or delete old bp_menu later
 ut_cli/                # package (name can be `ut_cli` — short)
   __init__.py
   __main__.py          # optional dispatcher
@@ -96,7 +95,7 @@ Behavior:
 
 Acceptance:
 
-- From a temp dir, `seed new` against a **local** clone path works with an existing template under legacy `templates/python` **or** a tiny fixture `projects/_fixture/` you add for tests.
+- From a temp dir, `seed new` against a **local** clone path works with a fixture under `projects/` (e.g. `projects/_fixture/` or `projects/python-base`).
 - `seed sync` calls Copier update on a generated project (smoke).
 - No Copier logic reimplemented in Python.
 
@@ -153,16 +152,16 @@ Acceptance:
 
 1. Shared interactive browse for `seed` / `snip`.  
 2. Document install: shims on PATH; mention mise.  
-3. Point root README at `docs/content/` (short); leave `bp` marked deprecated.  
-4. Optional: migrate one real template `templates/python` → `projects/python-base` for a live demo.  
-5. Tests in CI (`task test` / pytest).
+3. Point root README at `docs/content/` (short).  
+4. Grow real catalog units under `projects/` and `files/`.  
+5. Tests in CI (`task test`).
 
 ## Out of scope (this implementation)
 
 - Rewriting all catalog content  
 - Public PyPI package  
 - Three-way merge UI  
-- Extending `bp`  
+- Reintroducing `bp`  
 - Heavy TUI
 
 ## Implementation notes for the agent
@@ -192,6 +191,6 @@ Implement seed/snip per docs/IMPLEMENTATION.md in this repo.
 Follow docs/content/adr and docs/content. Python only, stdlib-first, small modules
 under ut_cli/. Wrap copier (seed) and vendir (snip) via subprocess.
 Unified UX: UT_CATALOG_REPO, diff+confirm catalog-wins, -y for CI.
-Do not extend bin/bp. Work phase by phase; keep PRs/reviewable chunks small.
+Do not reintroduce bp. Work phase by phase; keep PRs/reviewable chunks small.
 Ask before committing.
 ```

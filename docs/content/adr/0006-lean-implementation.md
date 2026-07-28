@@ -12,7 +12,7 @@ Interactive menus, anchor parsing, and subprocess orchestration are easier in Py
 ### Language
 
 - **Python is allowed** for unified UX glue (menus, anchor parse, subprocess to **Copier or vendir**, diff/confirm).
-- **Bash remains fine** for tiny wrappers (`install.sh`, thin shims).
+- **Bash remains fine** for thin shims under `bin/`.
 - Prefer **stdlib-first** Python.
 
 ### Not a Python project
@@ -29,14 +29,14 @@ Interactive menus, anchor parsing, and subprocess orchestration are easier in Py
 
 ### How tools ship
 
-- Simple scripts under `bin/` and/or `cli/` with shebangs; mise supplies Python and upstream CLIs in this repo.
-- Consumers should not be required to `pip install` a published package merely to use the catalog; mise (for contributors) or a thin install script is enough.
+- Simple scripts under `bin/` with shebangs; mise supplies Python and upstream CLIs in this repo.
+- Consumers should not be required to `pip install` a published package merely to use the catalog; mise (for contributors) or thin `bin/` shims is enough.
 - Catalog content remains plain files + Copier templates — the valuable artifact.
 
 ### Testing / quality
 
 - Keep tests focused on glue behavior; do not import a large test framework ecosystem without need.
-- Existing bats/shellcheck for shell bits remain appropriate where shell remains.
+- Shellcheck for shell shims remains appropriate where shell remains.
 
 ## Consequences
 

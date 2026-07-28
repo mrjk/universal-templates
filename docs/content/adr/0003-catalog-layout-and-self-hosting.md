@@ -54,14 +54,14 @@ Exact on-disk metadata filenames for file units (e.g. `part.yaml` vs successors)
 - `seed` and `snip` must honor `UT_CATALOG_REPO` (with that URL as fallback when unset).
 - **Hosting your own snippets** = publish a git repo with the same `projects/` + `files/` convention and point clients at it. No registry account required.
 
-### Migration from current layout
+### Migration from former layout
 
-| Current (legacy) | Target |
-|------------------|--------|
+| Former (removed) | Current |
+|------------------|---------|
 | `templates/` | `projects/` |
-| `parts/`, `common/` | `files/` (reorganized under `bin/`, `src/`, `notes/` as appropriate) |
+| `parts/`, `common/` | `files/` (under `bin/`, `src/`, `notes/` as appropriate) |
 
-Migration can be incremental; ADRs define the target, not the rename commit schedule.
+Legacy trees and the `bp` CLI are gone; catalog content lives only under `projects/` and `files/`.
 
 ## Consequences
 

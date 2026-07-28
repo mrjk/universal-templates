@@ -1,4 +1,0 @@
-name: makefile-basic
-description: "Basic Makefile with help, lint, and test targets"
-language: shell
-files_dir: files

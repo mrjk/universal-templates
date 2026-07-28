@@ -17,52 +17,7 @@ jobs:
           cache: true
 
       - name: ShellCheck
-        run: shellcheck bin/bp install.sh bin/seed bin/snip
-
-      - name: Validate part.yaml uniqueness and files/
-        run: |
-          set -euo pipefail
-
-          die() { echo "error: $*" >&2; exit 1; }
-
-          part_name() {
-            local y=$1
-            grep -E '^name:' "$y" | head -n1 | sed -E 's/^name:[[:space:]]*//; s/^["'\'']//; s/["'\'']$//'
-          }
-
-          collect_part_yamls() {
-            find parts common -type f -name 'part.yaml' | sort
-          }
-
-          validate_parts() {
-            local -a yamls=()
-            mapfile -t yamls < <(collect_part_yamls)
-            [ "${#yamls[@]}" -gt 0 ] || die "no part.yaml files found"
-
-            local names_file y dir name
-            names_file=$(mktemp)
-            trap 'rm -f "$names_file"' EXIT
-
-            for y in "${yamls[@]}"; do
-              dir=$(dirname "$y")
-              [ -d "$dir/files" ] || die "$dir missing files/"
-              name=$(part_name "$y")
-              [ -n "$name" ] || die "$y has empty name"
-              echo "$name" >> "$names_file"
-            done
-
-            if sort "$names_file" | uniq -d | grep -q .; then
-              echo "error: duplicate part names:"
-              sort "$names_file" | uniq -d
-              exit 1
-            fi
-            echo "validated ${#yamls[@]} parts; all names unique"
-          }
-
-          validate_parts
-
-      - name: Run bats tests
-        run: bats tests/bp.bats
+        run: shellcheck bin/seed bin/snip
 
       - name: Run Python unittest (ut_cli)
         run: python -m unittest discover -s tests -p 'test_*.py' -v

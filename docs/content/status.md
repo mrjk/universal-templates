@@ -19,8 +19,6 @@ What’s shipped vs still migrating. New users: start with the [Tutorial](tutori
 | Piece | Notes |
 |-------|--------|
 | Catalog content | Demo `python-base` + `_fixture`; more real units to come |
-| Legacy trees | `templates/`, `parts/`, `common/` remain for deprecated `bp` |
-| `bp` | Works but **deprecated** — don’t extend it |
 
 ## Related
 
