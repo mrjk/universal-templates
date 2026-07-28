@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 # install.sh — install bp onto PATH (~/.local/bin/bp)
+#
+# Prefer mise when working *in this repo*: with `mise activate`, mise.toml
+# puts ./bin on PATH automatically. Use this script to install bp globally
+# for use in other projects, or when mise is not available.
 set -euo pipefail
 
 INSTALL_DIR="${BP_INSTALL_DIR:-$HOME/.local/bin}"

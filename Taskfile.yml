@@ -1,0 +1,17 @@
+# https://taskfile.dev
+version: "3"
+
+tasks:
+  lint:
+    desc: ShellCheck bp and install.sh
+    cmds:
+      - shellcheck bin/bp install.sh
+
+  test:
+    desc: Run bats tests
+    cmds:
+      - bats tests/bp.bats
+
+  ci:
+    desc: Lint + test (local CI)
+    deps: [lint, test]

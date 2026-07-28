@@ -9,20 +9,36 @@ Two modes:
 
 ## Quickstart
 
-From a clone of this repo:
+### In this repo ([mise](https://mise.jdx.dev/))
+
+With [mise](https://mise.jdx.dev/) activated in your shell (`eval "$(mise activate bash)"` or equivalent), clone and enter the repo:
+
+```bash
+mise trust          # once per machine, if prompted
+mise install        # pinned jq, shellcheck, bats, python, copier
+bp --help           # ./bin is on PATH via mise.toml [env]._.path
+```
+
+Dev tooling and `bin/bp` are then available automatically while you are in this directory.
+
+### Install `bp` onto PATH (any project)
+
+From a clone:
 
 ```bash
 ./install.sh
 bp --help
 ```
 
-Or install from a remote git URL:
+Or from a remote git URL (no local clone required):
 
 ```bash
 BP_INSTALL_REPO=https://github.com/YOU/universal-templates bash -c "$(curl -fsSL https://raw.githubusercontent.com/YOU/universal-templates/main/install.sh)"
 ```
 
-Requirements for the core CLI: **git** (≥ 2.25) and **jq**. Copier is only needed for `bp new`.
+This copies `bin/bp` to `~/.local/bin/bp` so you can run `bp` outside this repo.
+
+Requirements for the core CLI: **git** (≥ 2.25) and **jq**. Copier is only needed for `bp new` (provided by mise in this repo).
 
 Optional interactive menu:
 
@@ -133,7 +149,9 @@ Both `templates/python` and `templates/shell` prompt for `project_slug` and `des
 ```
 bin/bp                 # core CLI (bash + git + jq)
 cli/bp_menu.py         # optional interactive layer
-install.sh
+install.sh             # optional: install bp to ~/.local/bin
+mise.toml / mise.lock  # pinned tools + ./bin on PATH in this repo
+Taskfile.yml           # lint / test / ci (go-task)
 templates/             # Copier full-project scaffolds
 parts/<lang>/<name>/   # composable parts
 common/<name>/         # cross-language parts
@@ -142,10 +160,21 @@ tests/bp.bats
 
 ## Development
 
-```bash
-# run tests (bats-core)
-bats tests/bp.bats
+[mise](https://mise.jdx.dev/) manages tools and PATH in this repo; [Task](https://taskfile.dev/) runs project commands.
 
-# lint
+```bash
+mise trust
+mise install
+task lint    # shellcheck bin/bp install.sh
+task test    # bats tests/bp.bats
+task ci      # lint + test
+```
+
+Without mise, use system `bats` / `shellcheck` / `jq` / `task` the same way CI does:
+
+```bash
+task ci
+# or:
+bats tests/bp.bats
 shellcheck bin/bp install.sh
 ```

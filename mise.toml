@@ -1,6 +1,10 @@
 # Dev / CI tooling for this repo (bp CLI + templates).
-# Install: mise install
+# Setup: mise trust && mise install
 # Lockfile: mise.lock (checksums/URLs for reproducible installs)
+# With `mise activate`, [env]._.path puts ./bin on PATH so `bp` works in-repo
+# without ./install.sh (install.sh is only for a global ~/.local/bin copy).
+#
+# Do NOT define mise [tasks.*] here — use Taskfile.yml (`task lint|test|ci`).
 
 [tools]
 jq = "1.8.2"
@@ -9,17 +13,9 @@ bats = "1.14.0"
 python = "3.12.13"
 copier = "9.17.0"
 
+# Expose ./bin/bp on PATH when this directory is active (mise activate / mise trust).
+[env]
+_.path = ["{{config_root}}/bin"]
+
 [settings]
 lockfile = true
-
-[tasks.lint]
-description = "ShellCheck bp and install.sh"
-run = "shellcheck bin/bp install.sh"
-
-[tasks.test]
-description = "Run bats tests"
-run = "bats tests/bp.bats"
-
-[tasks.ci]
-description = "Lint + test (local CI)"
-depends = ["lint", "test"]

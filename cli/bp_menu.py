@@ -44,7 +44,10 @@ def _find_bp() -> str:
     here = Path(__file__).resolve().parent.parent / "bin" / "bp"
     if here.is_file():
         return str(here)
-    _fail("bp executable not found (install via ./install.sh or set BP_BIN)")
+    _fail(
+        "bp executable not found "
+        "(use mise in this repo, ./install.sh for ~/.local/bin, or set BP_BIN)"
+    )
 
 
 def _run(bp: str, args: list[str], check: bool = True) -> subprocess.CompletedProcess[str]:
