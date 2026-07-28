@@ -1,60 +1,70 @@
-# ADR 0004 — Backend tools via mise (wrap, don’t reinvent)
+# ADR 0004 — Wrap Copier or vendir; unified UX
 
 - **Status:** Accepted
 - **Date:** 2026-07-28
+- **Supersedes:** earlier draft that left snip’s backend optional and listed fsrc/path-sync as candidates
 
 ## Context
 
-Reimplementing project templating or file vendoring would duplicate mature tools and bloat this repo. Dev tooling is already managed with **mise**. Clients should be **thin UX + catalog glue** that shell out to upstream CLIs where possible.
+Project scaffolding and file sync need different engines, but users should not learn two upstream products. Reimplementing either engine would bloat this repo. **mise** already pins tooling.
 
 ## Decision
 
-### Principle
+### Backends (only these two)
 
-**Wrap existing tools installed via mise.** Custom code only where no suitable tool covers the use case.
+| Concern | CLI | Upstream (via mise) | Catalog |
+|---------|-----|---------------------|---------|
+| Whole-project scaffold / update | `seed` | **[Copier](https://copier.readthedocs.io/)** | `projects/` |
+| File / fragment sync | `snip` | **[vendir](https://carvel.dev/vendir/)** | `files/` |
 
-### `seed` → Copier
+- Do **not** invent a third sync engine or adopt fsrc/path-sync as product backends.
+- Do **not** use Copier for `files/` or vendir for full project Q&A scaffolds.
+- Greenfield projects: **Copier only** (not Cookiecutter + cruft).
 
-- **[Copier](https://copier.readthedocs.io/)** is the project engine: questions, Jinja, `.copier-answers.yml`, `copier update`, git template refs.
-- Greenfield choice: **Copier only** (not Cookiecutter + cruft).
-- `seed` responsibilities: default catalog URL/paths under `projects/`, hierarchy discovery/menu, invoke `copier copy` / `copier update`, surface pins/refs.
-- Keep `copier` pinned in [`mise.toml`](../../mise.toml) `[tools]`.
+### Unified user experience
 
-### `snip` → wrap where possible; small custom core for regions
+`seed` and `snip` present **one product language**. Users talk to our CLIs, not to Copier or vendir day-to-day.
 
-| Tool | Role | Fit |
-|------|------|-----|
-| [vendir](https://carvel.dev/vendir/) | Declarative sync of git paths into directories + lockfile | Prefer for **whole-file/dir** drops from `files/` when a vendored path + lock is enough |
-| [fsrc](https://github.com/urmzd/fsrc) | Comment markers embed local file content into a host file | Candidate **region replace** engine after catalog fetch (spike later) |
-| [path-sync](https://github.com/EspenAlbert/path-sync) | SRC→DEST sync with section markers and headers | Closest conceptual model for marked sections; oriented to multi-repo YAML workflows — evaluate in a spike |
-| Docs embedders (embedoc, code-embedder, …) | Keep documentation in sync with code | **Out of scope** for `snip` |
+Shared UX across both:
 
-Decisions:
+- Same catalog knob: `UT_CATALOG_REPO`
+- Hierarchy browse / menus over the catalog
+- Verbs in the same family: discover → add/new → **sync** → list pins
+- Update policy: **diff → confirm → catalog wins** (plus `-y` for CI)
+- Visible **pins** (git tag/ref) for what is deployed
 
-1. **Whole-file/dir** sync → prefer **vendir** (or equivalent) via mise rather than reinventing sparse-checkout package logic.
-2. **In-file region sync** (`snip sync <file>`) → no mature end-to-end CLI for interactive catalog + menu + pins. **Custom glue is justified** for parse, menu, diff/confirm, pin metadata, and fetch. Optional follow-up: drive region apply through fsrc/path-sync after fetch.
-3. **Do not** use Copier for `snip` (wrong granularity).
+Wrappers own:
+
+- Mapping catalog paths → Copier template vs vendir content
+- Generating/maintaining whatever config the upstream tool needs (e.g. answers file, `vendir.yml` / lock) so users are not hand-editing upstream config for common flows
+- Interactive confirm and messaging in our terms (`seed sync`, `snip sync`)
 
 ```text
-seed  -->  copier (mise)  -->  UT_CATALOG_REPO / projects/*
-snip  -->  vendir (optional, mise)  -->  whole paths under files/*
-snip  -->  region engine (custom and/or fsrc|path-sync)  -->  anchors in consumer files
+        ┌─────────────────────────────────────┐
+        │  Unified UX (seed / snip)           │
+        │  menus · pins · diff/confirm · URL  │
+        └──────────────┬──────────────────────┘
+               ┌───────┴───────┐
+               ▼               ▼
+           Copier           vendir
+          (mise)            (mise)
+               │               │
+               ▼               ▼
+          projects/*        files/*
 ```
 
-### What stays custom (intentionally small)
+### What glue may still do (thin)
 
-- Catalog browse menus
-- `UT_CATALOG_REPO` defaults
-- Interactive “which portions?” for `snip sync`
-- Diff/confirm policy wiring
-- Pin/header helpers aligned with [ADR 0005](0005-snip-anchors-pins-and-update-ux.md)
+- Menus, `UT_CATALOG_REPO` defaults, pin/header helpers
+- For **in-file regions** ([ADR 0005](0005-snip-anchors-pins-and-update-ux.md)): parse anchors, let the user pick portions, show diff/confirm, then apply content that was **fetched via the vendir-backed catalog path** (or an equivalent fetch already owned by the snip→vendir integration). Region apply is glue; **fetch/lock of catalog bytes is vendir’s job**, not a parallel package manager.
 
 ### Relation to `bp`
 
-Treat `bp` as a prototype for fetch/state ideas only. Long-term backends are Copier + (vendir and/or small snip core), not an expanded `bp`.
+`bp` is a prototype. Long-term = unified `seed`/`snip` wrapping **Copier or vendir** only.
 
 ## Consequences
 
-- mise.toml grows with tools we actually wrap (copier now; vendir/etc. when adopted).
-- Spikes for fsrc/path-sync are expected before locking a region backend.
-- Less Python/bash reimplementation of templating and vendoring; more subprocess orchestration.
+- Pin `copier` and `vendir` in mise when implementing snip.
+- Docs teach `seed`/`snip` first; Copier/vendir are implementation footnotes.
+- PRs that add another sync backend need an ADR change.
+- Custom code stays UX + orchestration, not a second Copier or vendir.

@@ -28,7 +28,7 @@ seed new projects/python-web  # direct path when known
 seed sync                     # update an already-seeded project from its pinned template
 ```
 
-Backend: primarily **Copier** (see [ADR 0004](0004-backend-tools-via-mise.md)).
+Backend: **Copier** via mise, behind a unified UX (see [ADR 0004](0004-backend-tools-via-mise.md)).
 
 ### `snip` (file-oriented)
 
@@ -40,11 +40,12 @@ snip list ./my_forgotten_old_script.sh   # show detected portions / pins
 snip add files/src/logging-setup         # inject / attach a unit (details in later design)
 ```
 
-Backend: thin glue + optional wrapped tools for whole-file vendoring; region sync per [ADR 0005](0005-snip-anchors-pins-and-update-ux.md).
+Backend: **vendir** via mise for catalog fetch/lock of `files/*`, plus thin glue for anchors/menus (see [ADR 0004](0004-backend-tools-via-mise.md), [ADR 0005](0005-snip-anchors-pins-and-update-ux.md)).
 
-### Coupling
+### Unified UX + coupling
 
-- Hierarchies and CLIs stay **separate**.
+- Hierarchies and CLIs stay **separate**; **experience** stays aligned (same catalog URL, sync/list/menu language, diff/confirm, pins).
+- Users should not need to learn Copier or vendir to do everyday work.
 - `seed` **may invoke** `snip` when a project template declares optional file units.
 - Shared config: catalog URL / defaults (see [ADR 0003](0003-catalog-layout-and-self-hosting.md)).
 

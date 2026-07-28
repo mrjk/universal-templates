@@ -19,7 +19,7 @@ mise install        # pinned jq, shellcheck, bats, python, copier
 bp --help           # ./bin is on PATH via mise.toml [env]._.path
 ```
 
-Dev tooling and `bin/bp` are then available automatically while you are in this directory.
+Dev tooling and `bin/bp` are then available automatically while you are in this directory. mise also creates/activates a local `.venv` (from the pinned Python) on enter.
 
 ### Install `bp` onto PATH (any project)
 
@@ -40,7 +40,7 @@ This copies `bin/bp` to `~/.local/bin/bp` so you can run `bp` outside this repo.
 
 Requirements for the core CLI: **git** (≥ 2.25) and **jq**. Copier is only needed for `bp new` (provided by mise in this repo).
 
-Optional interactive menu:
+Optional interactive menu (install into the mise-managed `.venv`):
 
 ```bash
 pip install -r cli/requirements.txt

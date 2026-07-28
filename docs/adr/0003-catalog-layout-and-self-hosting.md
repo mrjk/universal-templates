@@ -29,15 +29,15 @@ files/                    # consumed by snip
   …                       # further nesting allowed under each
 ```
 
-- **`projects/<name>/`** — Copier-oriented multi-file scaffolds (directory-oriented).
-- **`files/{bin,src,notes}/…`** — file-oriented units (fragments and autonomous scripts). Subdirectories are allowed; menus must show hierarchy.
+- **`projects/<name>/`** — Copier scaffolds (consumed via `seed` UX).
+- **`files/{bin,src,notes}/…`** — file units (consumed via `snip` UX → vendir + anchors). Subdirectories allowed; menus must show hierarchy.
 
 ### Unit kinds
 
 | Kind | Lives under | Role |
 |------|-------------|------|
-| **Project** | `projects/` | Full scaffold; Copier answers + update |
-| **Fragment** | `files/` | Region and/or drop-in paths merged into consumer sources |
+| **Project** | `projects/` | Full scaffold; Copier behind `seed` |
+| **Fragment** | `files/` | Region and/or drop-in paths; vendir behind `snip` |
 | **Autonomous** | `files/` (often `bin/`) | Standalone script/file with embed header and version pin |
 
 Exact on-disk metadata filenames for file units (e.g. `part.yaml` vs successors) are an implementation detail; the **layout roots above are normative**.

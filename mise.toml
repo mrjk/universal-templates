@@ -14,8 +14,13 @@ python = "3.12.13"
 copier = "9.17.0"
 
 # Expose ./bin/bp on PATH when this directory is active (mise activate / mise trust).
+# Auto-create/activate .venv so `python`/`pip` are project-local while cd'd here.
+# UT_CATALOG_REPO: default public catalog for seed/snip (override to self-host).
+# See docs/adr/0003-catalog-layout-and-self-hosting.md
 [env]
 _.path = ["{{config_root}}/bin"]
+_.python.venv = { path = ".venv", create = true }
+UT_CATALOG_REPO = "https://github.com/mrjk/universal-templates.git"
 
 [settings]
 lockfile = true

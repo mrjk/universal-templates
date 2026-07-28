@@ -11,7 +11,7 @@ Interactive menus, anchor parsing, and subprocess orchestration are easier in Py
 
 ### Language
 
-- **Python is allowed** for `seed` / `snip` glue (menus, anchor parse, subprocess to Copier/vendir, diff/confirm).
+- **Python is allowed** for unified UX glue (menus, anchor parse, subprocess to **Copier or vendir**, diff/confirm).
 - **Bash remains fine** for tiny wrappers (`install.sh`, thin shims).
 - Prefer **stdlib-first** Python.
 
@@ -20,12 +20,12 @@ Interactive menus, anchor parsing, and subprocess orchestration are easier in Py
 - No Poetry-app / packaging-centric product layout for the CLIs.
 - No framework stack for the glue.
 - No fat dependency tree for `seed`/`snip` themselves.
-- Heavy work stays in **mise-installed CLIs** (Copier, later vendir, etc.), invoked via `subprocess` — not reimplemented in Python.
+- Heavy work stays in **mise-installed Copier and vendir**, invoked via `subprocess` — not reimplemented in Python.
 
 ### Dependencies
 
 - Optional tiny deps only when clearly worth it (e.g. one small prompt/TUI helper).
-- Out for glue: large CLI frameworks, rich UI stacks with many plugins, HTTP client stacks, extra templating engines beyond what Copier already provides.
+- Out for glue: large CLI frameworks, rich UI stacks with many plugins, HTTP client stacks, or extra templating/vendoring engines (that is Copier/vendir’s job).
 
 ### How tools ship
 
@@ -42,4 +42,4 @@ Interactive menus, anchor parsing, and subprocess orchestration are easier in Py
 
 - Contributors treat Python as a **scripting aid**, not a reason to grow an application core.
 - PRs that add heavy PyPI deps to the CLI glue need an explicit exception and ADR amendment.
-- Aligns with [ADR 0004](0004-backend-tools-via-mise.md): wrap tools, keep glue thin.
+- Aligns with [ADR 0004](0004-backend-tools-via-mise.md): wrap **Copier or vendir**, keep glue thin, unified UX.

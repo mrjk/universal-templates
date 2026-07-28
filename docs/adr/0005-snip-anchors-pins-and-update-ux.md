@@ -13,9 +13,10 @@ Shared code is often copy-pasted into scripts that live outside any single proje
 
 - **Pin = git ref** — prefer **tags** for releases; branch or sha allowed.
 - Recorded in:
-  - Copier / `seed` state (answers + template ref/sha) for projects
-  - `snip` state and/or **in-file metadata** for file units
+  - `seed` / Copier state (answers + template ref/sha) for projects
+  - `snip` / vendir lock + **in-file metadata** for file units
 - Catalog identity: `UT_CATALOG_REPO` ([ADR 0003](0003-catalog-layout-and-self-hosting.md)).
+- Pins and sync verbs should feel the same whether the backend is Copier or vendir ([ADR 0004](0004-backend-tools-via-mise.md)).
 
 ### In-file region anchors (normative mechanism)
 
@@ -53,11 +54,12 @@ Whole-file units may carry a header instead of (or in addition to) region anchor
 - Default: interactive **diff → confirm → catalog overwrites**.
 - Non-interactive: `-y` (CI-friendly).
 - **No silent clobber** in interactive mode.
-- **No three-way merge as v1 default** (Copier’s own update behavior for projects may still surface conflicts in Copier’s model; we do not invent a second merge engine for snips).
+- **No three-way merge as v1 default** for snip regions. Upstream tools may still surface their own conflict behavior; wrappers present a single confirm-oriented flow where we control it.
 
 ### Project updates (`seed sync`)
 
-- Rely on Copier’s update path and recorded answers/ref.
+- Rely on Copier’s update path and recorded answers/ref, exposed as `seed sync`.
+- File/catalog bytes for snips rely on vendir lock/sync, exposed as `snip sync` / `snip add`.
 - Same product policy: user-visible change review before accepting where the wrapper controls the flow.
 
 ## Consequences

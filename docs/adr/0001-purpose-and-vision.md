@@ -22,7 +22,7 @@ Sibling folders under `misc_templates/` (e.g. full Python project templates) sho
 
 - **Two concerns, not one monolith** — project scaffolding vs file/portion sync (see [ADR 0002](0002-seed-and-snip-clis.md)).
 - **Distribution = git** — no package registry, no custom server; any git host or local path works; anyone can host their own catalog (see [ADR 0003](0003-catalog-layout-and-self-hosting.md)).
-- **Wrap real tools** — prefer mise-installed upstream CLIs (especially Copier) over reinventing them (see [ADR 0004](0004-backend-tools-via-mise.md)).
+- **Wrap Copier or vendir** — unified `seed`/`snip` UX; users do not drive upstream tools directly (see [ADR 0004](0004-backend-tools-via-mise.md)).
 - **Pins for people** — consumers (including third parties) can see and keep track of which catalog version is deployed (see [ADR 0005](0005-snip-anchors-pins-and-update-ux.md)).
 - **Stay a catalog repo** — clients may use lean Python glue; this must not become a heavy Python application (see [ADR 0006](0006-lean-implementation.md)).
 
@@ -31,7 +31,8 @@ Sibling folders under `misc_templates/` (e.g. full Python project templates) sho
 - Package registries, SaaS, or tarball APIs
 - Three-way merge as the default update strategy
 - Silent overwrite of local changes without confirm (except explicit non-interactive `-y` for CI)
-- Replacing Copier’s project-update model with a custom scaffolder
+- Replacing Copier or vendir with a home-grown sync/scaffold engine
+- Exposing Copier/vendir as the primary user-facing interface
 - Turning this repository into a Poetry/packaging-centric Python product
 
 ### Relation to current `bp`
