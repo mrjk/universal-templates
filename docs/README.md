@@ -7,15 +7,15 @@
 **Preview / build** (Zensical — config stays `mkdocs.yml`):
 
 ```bash
-# from docs/
-task install   # once: pip install -r requirements.txt
-task serve     # http://localhost:8089
-task build     # writes site/
-
-# or from repo root
-task docs:install
-task docs:serve
+# from repo root (preferred)
+task install       # uv sync: snipseed + docs group
+task docs:serve    # http://localhost:8089
 task docs:build
+
+# or from docs/
+task install
+task serve
+task build
 ```
 
 Also:

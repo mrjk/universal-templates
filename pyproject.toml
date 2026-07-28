@@ -1,0 +1,26 @@
+# Catalog workspace deps — not a published package.
+# Public:  mise install && task install          → snipseed from git main
+# Develop: task snipseed:dev                     → editable local snipseed
+
+[project]
+name = "universal-templates"
+version = "0.0.0"
+description = "Git catalog of project scaffolds and reusable snippets"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+  "mrjk.snipseed",
+]
+
+[dependency-groups]
+docs = [
+  "zensical>=0.0.51",
+  "pyyaml>=6.0",
+]
+
+[tool.uv]
+package = false
+
+# Public install source (CI / task install). Do not commit a local path here.
+# Live local CLI: task snipseed:dev (SNIPSEED_SRC).
+[tool.uv.sources]
+"mrjk.snipseed" = { git = "https://github.com/mrjk/snipseed.git", branch = "main" }

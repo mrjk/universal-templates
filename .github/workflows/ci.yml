@@ -16,8 +16,8 @@ jobs:
           install: true
           cache: true
 
-      - name: Install docs deps
-        run: pip install -r docs/requirements.txt
+      - name: Sync Python deps
+        run: task install
 
       - name: Build docs
         run: task docs:build

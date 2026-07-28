@@ -15,7 +15,40 @@ tasks:
     cmds:
       - task --list
 
+  install:
+    desc: Public install — sync snipseed (git main) + docs into .venv
+    cmds:
+      - mise exec -- uv sync --all-groups
+
+  snipseed:dev:
+    desc: Link local snipseed (editable) for live CLI development
+    vars:
+      # CLI: task snipseed:dev SNIPSEED_SRC=/path — else env / mise.local / default
+      SNIPSEED_SRC: '{{.SNIPSEED_SRC | default ""}}'
+    cmds:
+      - |
+        set -euo pipefail
+        cli_src='{{.SNIPSEED_SRC}}'
+        if [[ -n "$cli_src" ]]; then
+          export SNIPSEED_SRC="$cli_src"
+        fi
+        # mise exec: uv on PATH + loads mise.local.toml [env]
+        mise exec -- bash -c '
+          set -euo pipefail
+          src="${SNIPSEED_SRC:-../../misc_python/snipseed}"
+          if [[ ! -d "$src" ]]; then
+            echo "snipseed:dev: path not found: $src" >&2
+            echo "Override: task snipseed:dev SNIPSEED_SRC=/path/to/snipseed" >&2
+            echo "Or set SNIPSEED_SRC in mise.local.toml / the environment." >&2
+            exit 1
+          fi
+          uv sync --all-groups
+          uv pip install -e "$src"
+          echo "snipseed:dev: editable link → $src (task install restores public git pin)"
+        '
+
   ci:
     desc: Build catalog docs (local CI)
+    deps: [install]
     cmds:
       - task: docs:build

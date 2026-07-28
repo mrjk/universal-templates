@@ -81,3 +81,11 @@ url_api = "https://api.github.com/repos/go-task/task/releases/assets/464613314"
 checksum = "sha256:e3bd4439b445f4f135758a2666ec8b33ccde789f7f615309c58f116b0e566e79"
 url = "https://github.com/go-task/task/releases/download/v3.52.0/task_windows_amd64.zip"
 url_api = "https://api.github.com/repos/go-task/task/releases/assets/464613286"
+
+[[tools.uv]]
+version = "0.11.28"
+backend = "aqua:astral-sh/uv"
+
+[[tools.vendir]]
+version = "0.46.0"
+backend = "aqua:carvel-dev/vendir"

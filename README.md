@@ -24,10 +24,30 @@ docs/content/      # catalog docs (Zensical)
 
 ## Development (this catalog)
 
+### Install tools (public)
+
 ```bash
 mise trust && mise install
-task docs:serve    # preview site
-task ci            # build docs
+task install       # snipseed from GitHub main + docs deps → .venv
+seed list          # uses this checkout (UT_CATALOG_REPO)
+snip list
+task docs:serve
+task ci            # public install + build docs
 ```
 
-Library / template generation stays here. CLI source lives in snipseed.
+Runtime backends: **copier** / **vendir** (mise).
+
+### Develop snipseed against this catalog
+
+```bash
+task snipseed:dev
+# edit snipseed → seed / snip pick up changes immediately
+task install       # restore public git pin when done
+```
+
+Local path (first match wins):
+
+1. `task snipseed:dev SNIPSEED_SRC=/path/to/snipseed`
+2. env `SNIPSEED_SRC`
+3. `mise.local.toml` → `[env] SNIPSEED_SRC = "…"`
+4. default `../../misc_python/snipseed`

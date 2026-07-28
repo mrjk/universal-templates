@@ -1,18 +1,26 @@
 # Dev tooling for this catalog (projects/ + files/ + docs).
-# Setup: mise trust && mise install
+# Setup: mise trust && mise install && task install
 # Lockfile: mise.lock
 #
 # Do NOT define mise [tasks.*] here — use Taskfile.yml (`task …`).
-# CLIs (seed / snip) live in https://github.com/mrjk/snipseed
+# Public CLIs: snipseed via pyproject.toml → .venv (task install).
+# snipseed develop: task snipseed:dev
+#   path: SNIPSEED_SRC=… on CLI / env / mise.local.toml [env]
 
 [tools]
 python = "3.12.13"
 task = "3.52.0"
-# Optional: authors testing Copier scaffolds under projects/
+uv = "0.11.28"
+# Runtime backends for seed / snip (not pip deps of snipseed)
 copier = "9.17.0"
+vendir = "0.46.0"
 
 [env]
-_.python.venv = { path = ".venv", create = true }
+_.path = ["{{config_root}}/.venv/bin"]
+# Prefer this checkout as the catalog while developing here
+UT_CATALOG_REPO = "{{config_root}}"
 
 [settings]
 lockfile = true
+# Activate .venv after `uv sync` (requires committed uv.lock)
+python.uv_venv_auto = "source"

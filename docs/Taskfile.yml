@@ -3,9 +3,10 @@ version: "3"
 
 tasks:
   install:
-    desc: Install Zensical into the project .venv
+    desc: Sync Python deps (snipseed + docs) into repo .venv
+    dir: ..
     cmds:
-      - pip install -r requirements.txt
+      - mise exec -- uv sync --all-groups
 
   serve:
     desc: Preview docs at http://localhost:8089
