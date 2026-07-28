@@ -62,12 +62,7 @@ seed sync --ref v1.2.3
 
 ## What’s in this catalog today
 
-| Path | Role |
-|------|------|
-| `projects/python-base` | Minimal Python package (demo / starting point) |
-| `projects/_fixture` | Tiny template for tests and learning |
-
-More scaffolds will land under `projects/` over time. Legacy trees still live under `templates/` for the deprecated `bp` CLI — prefer `projects/` for new work.
+See **[Inventory](inventory.md)** for the live list of `projects/`. More scaffolds land there over time. Legacy trees still live under `templates/` for the deprecated `bp` CLI — prefer `projects/` for new work.
 
 ## Menu browse
 
@@ -85,4 +80,4 @@ seed
 
 ## Related
 
-[Tutorial](tutorial.md) · [Snip](snip.md) · [Catalog](catalog.md) · [ADR 0002](adr/0002-seed-and-snip-clis.md)
+[Tutorial](tutorial.md) · [Snip](snip.md) · [Catalog](catalog.md) · [Inventory](inventory.md) · [ADR 0002](adr/0002-seed-and-snip-clis.md)

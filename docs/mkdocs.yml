@@ -19,6 +19,7 @@ nav:
   - Seed: seed.md
   - Snip: snip.md
   - Catalog: catalog.md
+  - Inventory: inventory.md
   - Quickstart: quickstart.md
   - Status: status.md
   - ADRs:
@@ -39,3 +40,9 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+  # Live inventory of projects/ + files/ — see macros.py
+  # Only pages with `render_macros: true` front matter are templated.
+  - zensical.extensions.macros:
+      module_name: macros
+      render_by_default: false
+      on_error_fail: true

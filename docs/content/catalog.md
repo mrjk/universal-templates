@@ -21,13 +21,7 @@ export UT_CATALOG_REPO="$HOME/prj/universal-templates"
 
 ```text
 projects/                 # seed → Copier
-  python-base/
-  _fixture/               # tiny demo
-  …                       # more scaffolds over time
 files/                    # snip → vendir (+ anchors)
-  bin/
-  src/
-  notes/
 ```
 
 | Kind | Location | You run |
@@ -36,6 +30,8 @@ files/                    # snip → vendir (+ anchors)
 | Fragment / file | `files/…` | `snip add` / `snip sync` |
 
 Legacy `templates/`, `parts/`, `common/` still exist for the deprecated `bp` CLI and will migrate gradually ([Status](status.md)).
+
+What’s currently shipped: **[Inventory](inventory.md)** (live from disk).
 
 ## Host your own
 
@@ -77,4 +73,4 @@ Authors may peek at Copier/vendir; **consumers** stay on `seed` / `snip`.
 
 ## Related
 
-[Tutorial](tutorial.md) · [ADR 0003](adr/0003-catalog-layout-and-self-hosting.md) · [ADR 0004](adr/0004-backend-tools-via-mise.md)
+[Inventory](inventory.md) · [Tutorial](tutorial.md) · [ADR 0003](adr/0003-catalog-layout-and-self-hosting.md) · [ADR 0004](adr/0004-backend-tools-via-mise.md)

@@ -11,7 +11,8 @@ What’s shipped vs still migrating. New users: start with the [Tutorial](tutori
 | `UT_CATALOG_REPO` | Honored (URL or local path) |
 | Copier / vendir | Pinned via mise; wrapped by the CLIs |
 | Anchor `snip sync <file>` | Supported |
-| Docs learning path | Overview → Tutorial → Seed / Snip / Catalog |
+| Docs learning path | Overview → Tutorial → Seed / Snip / Catalog / Inventory |
+| Docs inventory page | Live `projects/` + `files/` via Zensical macros |
 
 ## Still transitional
 

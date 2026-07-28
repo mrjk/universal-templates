@@ -1,6 +1,6 @@
 # Docs
 
-**User guide (site source):** [content/](content/index.md) — Overview → Tutorial → Seed / Snip / Catalog.
+**User guide (site source):** [content/](content/index.md) — Overview → Tutorial → Seed / Snip / Catalog / Inventory.
 
 **Preview / build** (Zensical — Material for MkDocs successor; config stays `mkdocs.yml`):
 
@@ -21,4 +21,5 @@ Also:
 - **[ADRs](content/adr/README.md)** — architecture decisions  
 - **[Implementation plan](IMPLEMENTATION.md)** — build brief (already implemented)
 - **[mkdocs.yml](mkdocs.yml)** — Zensical config (`docs_dir: content`)
+- **[macros.py](macros.py)** — Zensical macros: live `projects/` + `files/` inventory
 - **[Taskfile.yml](Taskfile.yml)** — install / serve / build

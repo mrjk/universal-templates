@@ -98,7 +98,7 @@ After you confirm, **catalog wins** for that file or region. No silent clobber i
 | `files/src/` | Embeddable fragments |
 | `files/notes/` | Doc snippets, checklists |
 
-Today this repo ships a learning fixture under `files/src/_fixture/`. Real shared units grow here the same way.
+What’s currently under `files/`: **[Inventory](inventory.md)**.
 
 ## Before / after
 
@@ -111,4 +111,4 @@ vendir pulls/locks bytes from `$UT_CATALOG_REPO`; glue applies them to destinati
 
 ## Related
 
-[Tutorial](tutorial.md) · [Seed](seed.md) · [Catalog](catalog.md)
+[Tutorial](tutorial.md) · [Seed](seed.md) · [Catalog](catalog.md) · [Inventory](inventory.md)
