@@ -1,8 +1,12 @@
 # Quickstart
 
-Get oriented in a few minutes. Commands describe the **target** UX (`seed` / `snip`). See [Status](status.md) if binaries are not on PATH yet.
+Get oriented in a few minutes using the **main catalog**:
 
-## 1. Clone the catalog
+`https://github.com/mrjk/universal-templates.git`
+
+Commands describe the **target** UX (`seed` / `snip`). See [Status](status.md) if binaries are not on PATH yet. Hosting your own catalog is optional and covered at the end.
+
+## 1. Clone this repo
 
 ```bash
 git clone https://github.com/mrjk/universal-templates.git
@@ -18,18 +22,16 @@ mise trust    # once per machine, if prompted
 mise install  # python, copier, … (+ vendir when snip lands)
 ```
 
-Default catalog URL (override to self-host):
+While you are in this directory, mise already sets the catalog to this project:
 
 ```bash
 echo "$UT_CATALOG_REPO"
 # https://github.com/mrjk/universal-templates.git
-
-export UT_CATALOG_REPO="https://github.com/YOU/my-snippets.git"
-# or a local path:
-export UT_CATALOG_REPO="$HOME/prj/my-snippets"
 ```
 
-## 3. Catalog layout
+No extra config needed to consume **this** repo.
+
+## 3. What’s in the main catalog
 
 ```text
 projects/          # seed → Copier
@@ -42,25 +44,27 @@ files/             # snip → vendir (+ anchors glue)
   notes/
 ```
 
-## 4. Seed a project
+## 4. Seed a project (from this catalog)
 
 ```bash
 mkdir -p ~/tmp/demo-app && cd ~/tmp/demo-app
 seed
 # pick projects/python-web → answer questions → done
 
-seed sync          # later: pull template updates (same confirm-oriented UX)
+seed sync          # later: pull template updates from the main catalog
 ```
 
-Direct path:
+Or without the menu:
 
 ```bash
 seed new projects/python-web
 ```
 
-You talk to **`seed`**, not to `copier` (the wrapper runs Copier for you).
+You talk to **`seed`**, not to `copier` (the wrapper runs Copier against `$UT_CATALOG_REPO`).
 
-## 5. Snip-sync an existing file
+## 5. Snip-sync an existing file (from this catalog)
+
+Mark a shared region, then refresh it from the main catalog:
 
 ```bash
 #!/usr/bin/env bash
@@ -80,17 +84,21 @@ snip sync ./my_forgotten_old_script.sh
 snip list ./my_forgotten_old_script.sh
 ```
 
-You talk to **`snip`**, not to `vendir` (the wrapper uses vendir to fetch/lock catalog content).
+You talk to **`snip`**, not to `vendir` (the wrapper fetches/locks content from this catalog).
 
-## 6. Host your own snippets
+## 6. (Optional) Host your own catalog
+
+When you want **your** snippets instead of (or in addition to) the main repo, point the same CLIs at another git URL or local path:
 
 ```bash
 export UT_CATALOG_REPO="https://github.com/YOU/my-catalog.git"
+# or: export UT_CATALOG_REPO="$HOME/prj/my-catalog"
+
 seed
 snip sync ./some_script.sh
 ```
 
-Same commands, your git repo. Details: [Catalog](catalog.md).
+Same commands, your content. Layout and authoring details: [Catalog & self-hosting](catalog.md).
 
 ## Next
 
