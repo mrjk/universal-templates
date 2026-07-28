@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# {{ project_slug }} — {{ description }}
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+{{ project_slug }} — {{ description }}
+
+Usage:
+  {{ project_slug }}.sh [-h]
+
+Options:
+  -h, --help    Show this help
+EOF
+}
+
+main() {
+  case "${1:-}" in
+    -h|--help) usage; exit 0 ;;
+    "") echo "{{ project_slug }}: ok" ;;
+    *) echo "error: unknown argument: $1" >&2; usage; exit 1 ;;
+  esac
+}
+
+main "$@"
