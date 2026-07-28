@@ -1,0 +1,25 @@
+# Dev / CI tooling for this repo (bp CLI + templates).
+# Install: mise install
+# Lockfile: mise.lock (checksums/URLs for reproducible installs)
+
+[tools]
+jq = "1.8.2"
+shellcheck = "0.11.0"
+bats = "1.14.0"
+python = "3.12.13"
+copier = "9.17.0"
+
+[settings]
+lockfile = true
+
+[tasks.lint]
+description = "ShellCheck bp and install.sh"
+run = "shellcheck bin/bp install.sh"
+
+[tasks.test]
+description = "Run bats tests"
+run = "bats tests/bp.bats"
+
+[tasks.ci]
+description = "Lint + test (local CI)"
+depends = ["lint", "test"]
