@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bats shellcheck jq
+
+      - name: ShellCheck
+        run: shellcheck bin/bp install.sh
+
+      - name: Validate part.yaml uniqueness and files/
+        run: |
+          set -euo pipefail
+          mapfile -t yamls < <(find parts common -type f -name 'part.yaml' | sort)
+          [ "${#yamls[@]}" -gt 0 ] || { echo "no part.yaml files found"; exit 1; }
+
+          names_file=$(mktemp)
+          trap 'rm -f "$names_file"' EXIT
+
+          for y in "${yamls[@]}"; do
+            dir=$(dirname "$y")
+            [ -d "$dir/files" ] || { echo "error: $dir missing files/"; exit 1; }
+
+            name=$(grep -E '^name:' "$y" | head -n1 | sed -E 's/^name:[[:space:]]*//; s/^["'\'']//; s/["'\'']$//')
+            [ -n "$name" ] || { echo "error: $y has empty name"; exit 1; }
+            echo "$name" >> "$names_file"
+          done
+
+          if sort "$names_file" | uniq -d | grep -q .; then
+            echo "error: duplicate part names:"
+            sort "$names_file" | uniq -d
+            exit 1
+          fi
+          echo "validated ${#yamls[@]} parts; all names unique"
+
+      - name: Run bats tests
+        run: bats tests/bp.bats
