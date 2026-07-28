@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import sys
 
+from ut_cli import diffutil
+
 
 def confirm(prompt: str = "Apply changes?", *, yes: bool = False) -> bool:
     if yes:
@@ -19,7 +21,8 @@ def show_diff_and_confirm(diff_text: str, *, yes: bool = False, prompt: str = "A
     if not diff_text.strip():
         print("No changes.", file=sys.stderr)
         return False
-    sys.stdout.write(diff_text)
-    if not diff_text.endswith("\n"):
+    colored = diffutil.colorize_unified_diff(diff_text)
+    sys.stdout.write(colored)
+    if not colored.endswith("\n"):
         sys.stdout.write("\n")
     return confirm(prompt, yes=yes)

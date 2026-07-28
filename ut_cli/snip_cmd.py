@@ -32,21 +32,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     add_common_flags(add_p)
 
-    sync_p = sub.add_parser("sync", help="Sync tracked paths or anchors in a file")
+    sync_p = sub.add_parser("sync", help="Sync tracked paths or anchors/slots in a file")
     sync_p.add_argument(
         "target",
         nargs="?",
         default=None,
-        help="Optional file with snip anchors; omit to sync tracked vendir units",
+        help="Optional file with snip anchors/slots; omit to sync tracked vendir units",
     )
     add_common_flags(sync_p)
 
-    list_p = sub.add_parser("list", help="List files/ in catalog, or anchors in a file")
+    list_p = sub.add_parser("list", help="List files/ in catalog, or anchors/slots in a file")
     list_p.add_argument(
         "target",
         nargs="?",
         default=None,
-        help="Optional local file to list anchors in",
+        help="Optional local file to list anchors/slots in",
     )
     add_common_flags(list_p)
 
@@ -66,11 +66,22 @@ def cmd_list_catalog(opts) -> int:
 def cmd_list_file(path: Path) -> int:
     text = path.read_text(encoding="utf-8")
     found = anchors.parse_anchors(text)
+    slots = anchors.parse_slots(text)
     header = anchors.parse_file_header(text)
-    if header.template_source or header.curr_version:
-        print(f"header: source={header.template_source} version={header.curr_version}")
+    if header.template_source or header.curr_version or header.path:
+        print(
+            f"header: source={header.template_source} version={header.curr_version}"
+            f" path={header.path} ref={header.ref}"
+        )
+    if found and slots:
+        print("error: file mixes snip:id= (inject) and snip:slot= (boilerplate)", file=sys.stderr)
+        return 1
+    if slots:
+        for s in slots:
+            print(f"slot:{s.id}")
+        return 0
     if not found:
-        print("(no snip anchors)")
+        print("(no snip anchors or slots)")
         return 0
     for a in found:
         print(f"{a.id}\tpath={a.path}\tref={a.ref}")
@@ -89,6 +100,9 @@ def cmd_add(args, opts) -> int:
         target = dest / leaf
         old = diffutil.file_text(target) if target.is_file() else ""
         new_text = new_bytes.decode("utf-8")
+        # If dest already has slots, merge instead of clobbering on re-add
+        if old and anchors.parse_slots(old):
+            new_text = anchors.merge_boilerplate(new_text, anchors.get_slot_bodies(old))
         diff = diffutil.unified_text_diff(
             old, new_text, fromfile=f"a/{leaf}", tofile=f"b/{leaf}"
         )
@@ -99,11 +113,33 @@ def cmd_add(args, opts) -> int:
             print(f"catalog: {catalog_repo()}")
             if not confirm.confirm("Add from catalog?", yes=False):
                 return 1
+        if old and anchors.parse_slots(old):
+            pin = opts.ref or "HEAD"
+            target.write_text(
+                anchors.bump_file_header_ref(new_text, pin),
+                encoding="utf-8",
+            )
+            print(f"merged boilerplate {target}")
+            return 0
         out = vendir_wrap.add_unit(catalog_path, dest=dest, ref=opts.ref, base=dest)
         print(f"added {out}")
     except (FileNotFoundError, IsADirectoryError, proc.ToolMissingError, proc.ProcError) as exc:
         proc.die(str(exc))
     return 0
+
+
+def _resolve_tracked_target(leaf: str) -> Path:
+    target = Path(leaf)
+    if target.is_file():
+        return target
+    candidates = list(Path(".").glob(f"**/{leaf}"))
+    return candidates[0] if candidates else Path(leaf)
+
+
+def _sync_boilerplate_text(old: str, catalog_text: str, *, pin: str) -> str:
+    bodies = anchors.get_slot_bodies(old)
+    merged = anchors.merge_boilerplate(catalog_text, bodies)
+    return anchors.bump_file_header_ref(merged, pin)
 
 
 def cmd_sync_tracked(opts) -> int:
@@ -113,19 +149,19 @@ def cmd_sync_tracked(opts) -> int:
     try:
         work = vendir_wrap.state_dir()
         vendir_wrap.write_vendir_config(units, dest_dir=work)
-        # Diff each unit before sync overwrite of dest copies
         for unit in units:
             catalog_path = unit["path"]
-            new_bytes = vendir_wrap.fetch_bytes(catalog_path, ref=opts.ref or unit.get("ref"))
+            ref = opts.ref or unit.get("ref")
+            new_bytes = vendir_wrap.fetch_bytes(catalog_path, ref=ref)
             leaf = Path(catalog_path).name
-            # Find existing dest file near cwd
-            target = Path(leaf)
-            if not target.is_file():
-                # search under common dest
-                candidates = list(Path(".").glob(f"**/{leaf}"))
-                target = candidates[0] if candidates else Path(leaf)
+            target = _resolve_tracked_target(leaf)
             old = diffutil.file_text(target) if target.is_file() else ""
-            new_text = new_bytes.decode("utf-8")
+            catalog_text = new_bytes.decode("utf-8")
+            pin = ref or "HEAD"
+            if old and anchors.parse_slots(old):
+                new_text = _sync_boilerplate_text(old, catalog_text, pin=pin)
+            else:
+                new_text = catalog_text
             diff = diffutil.unified_text_diff(
                 old, new_text, fromfile=f"a/{leaf}", tofile=f"b/{leaf}"
             )
@@ -133,19 +169,17 @@ def cmd_sync_tracked(opts) -> int:
                 diff or "--- (new file)\n", yes=opts.yes, prompt=f"Apply {catalog_path}?"
             ):
                 continue
-            vendir_wrap.add_unit(catalog_path, dest=target.parent, ref=opts.ref or unit.get("ref"))
+            if old and anchors.parse_slots(old):
+                target.write_text(new_text, encoding="utf-8")
+            else:
+                vendir_wrap.add_unit(catalog_path, dest=target.parent, ref=ref)
             print(f"synced {catalog_path}")
     except (FileNotFoundError, proc.ToolMissingError, proc.ProcError) as exc:
         proc.die(str(exc))
     return 0
 
 
-def cmd_sync_file(path: Path, opts) -> int:
-    text = path.read_text(encoding="utf-8")
-    found = anchors.parse_anchors(text)
-    if not found:
-        proc.die(f"no snip anchors in {path}")
-
+def cmd_sync_inject(path: Path, text: str, found: list, opts) -> int:
     labels = [f"{a.id}  path={a.path}  ref={a.ref}" for a in found]
     if opts.yes:
         selected_labels = labels
@@ -157,7 +191,6 @@ def cmd_sync_file(path: Path, opts) -> int:
 
     selected_ids = {lab.split()[0] for lab in selected_labels}
     current = text
-    # Re-parse after each apply so line numbers stay valid — apply from bottom to top
     to_apply = [a for a in found if a.id in selected_ids]
     to_apply.sort(key=lambda a: a.start_line, reverse=True)
 
@@ -169,9 +202,6 @@ def cmd_sync_file(path: Path, opts) -> int:
             ref = opts.ref or anchor.ref
             new_bytes = vendir_wrap.fetch_bytes(anchor.path, ref=ref)
             new_body = new_bytes.decode("utf-8")
-            # If fetched content is a full file that itself has anchors, use inner body? use raw.
-            old_body = anchors.get_body(current, anchor)
-            # Re-find anchor in current text by id
             refreshed = {a.id: a for a in anchors.parse_anchors(current)}
             anchor = refreshed[anchor.id]
             old_body = anchors.get_body(current, anchor)
@@ -192,6 +222,46 @@ def cmd_sync_file(path: Path, opts) -> int:
     except (FileNotFoundError, IsADirectoryError, proc.ToolMissingError, proc.ProcError) as exc:
         proc.die(str(exc))
     return 0
+
+
+def cmd_sync_boilerplate(path: Path, text: str, opts) -> int:
+    header = anchors.parse_file_header(text)
+    catalog_path = header.path
+    if not catalog_path:
+        proc.die(f"boilerplate file missing header 'snip: path=...': {path}")
+    ref = opts.ref or header.ref
+    try:
+        new_bytes = vendir_wrap.fetch_bytes(catalog_path, ref=ref)
+        catalog_text = new_bytes.decode("utf-8")
+        pin = ref or "HEAD"
+        merged = _sync_boilerplate_text(text, catalog_text, pin=pin)
+        diff = diffutil.unified_text_diff(
+            text, merged, fromfile=f"a/{path.name}", tofile=f"b/{path.name}"
+        )
+        if not confirm.show_diff_and_confirm(
+            diff, yes=opts.yes, prompt=f"Apply boilerplate {catalog_path}?"
+        ):
+            return 1
+        path.write_text(merged, encoding="utf-8")
+        print(f"updated boilerplate {path} → ref={pin}")
+    except (FileNotFoundError, IsADirectoryError, proc.ToolMissingError, proc.ProcError) as exc:
+        proc.die(str(exc))
+    return 0
+
+
+def cmd_sync_file(path: Path, opts) -> int:
+    text = path.read_text(encoding="utf-8")
+    found = anchors.parse_anchors(text)
+    slots = anchors.parse_slots(text)
+    if found and slots:
+        proc.die(
+            f"{path}: mixes snip:id= (inject) and snip:slot= (boilerplate); use one mode"
+        )
+    if slots:
+        return cmd_sync_boilerplate(path, text, opts)
+    if not found:
+        proc.die(f"no snip anchors or slots in {path}")
+    return cmd_sync_inject(path, text, found, opts)
 
 
 def cmd_browse(opts) -> int:

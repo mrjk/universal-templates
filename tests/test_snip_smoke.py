@@ -63,6 +63,48 @@ class TestSnipSmoke(unittest.TestCase):
                 body = anchors.get_body(text, a)
                 self.assertIn("FIXTURE_MARKER", body)
 
+    def test_sync_boilerplate_preserves_slot(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            script = Path(tmp) / "boilerplate.sh"
+            script.write_text(
+                """#!/usr/bin/env bash
+# snip: sync with: snip sync %FILE%
+# snip: path=files/src/_fixture/boilerplate.sh ref=old
+# snip: source=https://github.com/mrjk/universal-templates.git
+# snip: version=old
+FRAME_MARKER=stale
+# >>> snip:slot=main
+echo custom-user
+# <<< snip:slot=main
+echo old-tail
+""",
+                encoding="utf-8",
+            )
+            with mock.patch.dict(os.environ, self.env):
+                code = snip_cmd.main(["sync", str(script), "-y"])
+            self.assertEqual(code, 0)
+            text = script.read_text(encoding="utf-8")
+            self.assertIn("FRAME_MARKER=v1", text)
+            self.assertIn("echo custom-user", text)
+            self.assertIn("echo done", text)
+            self.assertNotIn("old-tail", text)
+            h = anchors.parse_file_header(text)
+            self.assertEqual(h.ref, "old")
+            bodies = anchors.get_slot_bodies(text)
+            self.assertIn("echo custom-user", bodies["main"])
+
+    def test_list_boilerplate_slots(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            script = Path(tmp) / "b.sh"
+            script.write_text(
+                "# snip: path=files/src/_fixture/boilerplate.sh ref=main\n"
+                "# >>> snip:slot=main\nx\n# <<< snip:slot=main\n",
+                encoding="utf-8",
+            )
+            with mock.patch.dict(os.environ, self.env):
+                code = snip_cmd.main(["list", str(script)])
+            self.assertEqual(code, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

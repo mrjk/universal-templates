@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 import difflib
+import os
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 
@@ -31,6 +35,33 @@ def unified_text_diff(
             tofile=tofile,
         )
     )
+
+
+def colorize_unified_diff(diff_text: str) -> str:
+    """Color a unified diff via colordiff when available on a TTY."""
+    if not diff_text or not sys.stdout.isatty():
+        return diff_text
+    if os.environ.get("NO_COLOR", ""):
+        return diff_text
+    colordiff = shutil.which("colordiff")
+    if not colordiff:
+        return diff_text
+    try:
+        # Force color: colordiff sees a pipe (capture_output) and would otherwise
+        # skip ANSI; we already gate on our own stdout TTY / NO_COLOR above.
+        result = subprocess.run(
+            [colordiff, "--color=yes"],
+            input=diff_text,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        return diff_text
+    # colordiff mirrors diff exit codes (0/1); either is fine for display
+    if result.returncode in (0, 1) and result.stdout:
+        return result.stdout
+    return diff_text
 
 
 def file_text(path: Path) -> str:

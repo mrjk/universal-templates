@@ -51,13 +51,14 @@ def write_vendir_config(
         if local is not None:
             abs_src = (local / catalog_path).resolve()
             if abs_src.is_file():
-                # vendir directory source requires a directory — stage the single file
+                # vendir directory source requires a directory — stage the single file.
+                # Path must be relative to dest_dir (vendir sync cwd), not the project root.
                 stage = dest_dir / ".stage" / name
                 stage.mkdir(parents=True, exist_ok=True)
                 staged = stage / abs_src.name
                 shutil.copy2(abs_src, staged)
                 lines.append("    directory:")
-                lines.append(f"      path: {stage}")
+                lines.append(f"      path: {stage.relative_to(dest_dir)}")
             else:
                 lines.append("    directory:")
                 lines.append(f"      path: {abs_src}")
